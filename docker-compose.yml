@@ -1,0 +1,30 @@
+version: "2"
+
+services:
+    redis:
+      image: hub.coloseo.io/redis:3.2.11-alpine
+      volumes:
+        - .redis:/data
+      ports:
+        - "6379:6379"
+      command: redis-server --appendonly yes
+
+    db:
+      image: hub.coloseo.io/mysql:5.7
+      volumes:
+      - .data:/var/lib/mysql
+      ports:
+      - "3306:3306"
+      environment:
+      - MYSQL_ROOT_PASSWORD=authority
+      - MYSQL_USER=authority
+      - MYSQL_PASSWORD=authority
+      - MYSQL_DATABASE=authority
+      command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+
+    dbconsole:
+      image: hub.coloseo.io/adminer
+      ports:
+      - "8082:8080"
+

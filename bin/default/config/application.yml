@@ -1,0 +1,32 @@
+#Swagger Configure Properties
+sop:
+  swagger:
+    description: post Restful API
+    enable: true
+    packageScan: cn.chinaunicom
+    title: post Restful API
+    version: 1.0
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+  http:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+mybatis-plus:
+  configuration:
+    cache-enabled: true
+    map-underscore-to-camel-case: true
+  global-config:
+    db-column-underline: true   #驼峰下划线转换
+    field-strategy: 2   #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    id-type: 2    # 主键类型 全局唯一ID UUID
+    #逻辑删除配置（下面3个配置)
+    logic-delete-value: 0
+    logic-not-delete-value: 1
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+  # Mybatis-plus Configure Properties
+  mapper-locations: classpath*:**/dao/*.xml
+  typeAliasesPackage: cn.chinaunicom.**.entity*

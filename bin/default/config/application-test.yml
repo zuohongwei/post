@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    password: ehr2yy!@#
+    url: jdbc:mysql://10.0.210.94:8306/ehr2yy?characterEncoding=utf8&useSSL=false
+    username: ehr2yy
+
+
+

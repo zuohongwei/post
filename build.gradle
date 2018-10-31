@@ -1,0 +1,106 @@
+buildscript {
+	ext {
+		springFoxSwaggerVersion = '2.8.0'
+		mockitoVersion = '2.8.47'
+		assertJVersion = '3.8.0'
+		p3cVersion = '1.3.0'
+		mybatisPlusVersion = '2.3'
+		springMybatisPlusVersion = '1.0.5'
+		commonsLang3Version = '3.3.2'
+		druidVersion = '1.1.9'
+		embeddedRedisVersion = '0.7.2'
+		quickQueueRedisVersion = '1.0.9'
+		fastjsonVersion = '1.2.47'
+		velocityVersion = '2.0'
+	}
+	repositories {
+		maven {
+			url 'http://maven.aliyun.com/nexus/content/groups/public/'
+		}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.12.RELEASE")
+		classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2")
+		classpath("io.spring.gradle:dependency-management-plugin:0.5.4.RELEASE")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: "org.sonarqube"
+apply plugin: "pmd"
+apply plugin: "jacoco"
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+
+group = 'com.chinaunicom.ihr'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	maven {
+			url 'http://maven.aliyun.com/nexus/content/groups/public/'
+		}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom 'com.amazonaws:aws-java-sdk-bom:1.10.47'
+	}
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web') {
+		exclude module: 'spring-boot-starter-tomcat'
+	}
+	compile('org.springframework.boot:spring-boot-starter-undertow')
+	compile('org.springframework.boot:spring-boot-starter-data-redis')
+	compile('org.flywaydb:flyway-core')
+	compile("com.baomidou:mybatis-plus:${mybatisPlusVersion}")
+	compile("com.baomidou:mybatisplus-spring-boot-starter:${springMybatisPlusVersion}")
+	compile("org.apache.velocity:velocity-engine-core:${velocityVersion}")
+	compile("com.alibaba:druid:${druidVersion}")
+	//compile("com.chinaunicom.ihr:quick-queue-redis:${quickQueueRedisVersion}")
+	compile("com.alibaba:fastjson:${fastjsonVersion}")
+
+	compile("io.springfox:springfox-swagger2:${springFoxSwaggerVersion}")
+	compile("io.springfox:springfox-swagger-ui:${springFoxSwaggerVersion}")
+
+	compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
+
+	compile("com.amazonaws:aws-java-sdk-s3")
+	compile group:'cn.afterturn', name:'easypoi-spring-boot-starter', version:'3.2.0'
+
+	runtime('mysql:mysql-connector-java')
+
+	pmd("com.alibaba.p3c:p3c-pmd:${p3cVersion}")
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile("org.mockito:mockito-core:${mockitoVersion}")
+	testCompile("org.assertj:assertj-core:${assertJVersion}")
+	testCompile('com.h2database:h2')
+	testCompile("it.ozimov:embedded-redis:${embeddedRedisVersion}")
+}
+
+pmd {
+	consoleOutput = true
+	ignoreFailures = true
+	pmdTest.enabled = false
+
+	reportsDir = file("$project.buildDir/reports/pmd")
+	ruleSets = [
+			"java-ali-comment",
+			"java-ali-concurrent",
+			"java-ali-constant",
+			"java-ali-exception",
+			"java-ali-flowcontrol",
+			"java-ali-naming",
+			"java-ali-oop",
+			"java-ali-orm",
+			"java-ali-other",
+			"java-ali-set"
+	]
+}
+
+tasks.withType(JavaCompile) {  
+    options.encoding = "UTF-8"  
+}  

@@ -32,11 +32,19 @@ public class ServerConfigInterceptor implements HandlerInterceptor{
 	
 	HashMap<String, String> serverMap = new HashMap<String, String>();
 	
+	HashMap<String, String> withoutAuthorityUrls = new HashMap<String, String>();
+	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String path = request.getRequestURI();
 		if(path.startsWith(Constant.SERVER_PREFIX)) {
+			if(withoutAuthorityUrls.isEmpty()){
+				initWithoutAuthorityUrls();
+			}
+			if(withoutAuthorityUrls.containsValue(path)){
+				return true;
+			}
 			if(serverMap.size()==0) {
 				initServerMap();
 			}
@@ -78,6 +86,10 @@ public class ServerConfigInterceptor implements HandlerInterceptor{
 			throws Exception {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void initWithoutAuthorityUrls(){
+		withoutAuthorityUrls.put("/api/menuitemReg/menulist", "/api/menuitemReg/menulist");
 	}
 
 }

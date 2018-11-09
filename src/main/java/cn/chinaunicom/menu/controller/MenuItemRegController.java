@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "菜单注册", tags = "菜单注册")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/menuitemReg")
+@RequestMapping("/api/menuItemReg")
 public class MenuItemRegController {
 
 	@Autowired
@@ -104,7 +104,7 @@ public class MenuItemRegController {
                     message = "未查询到数据"
             )
     })
-    @GetMapping("/menulist")
+    @GetMapping("/menuList")
     public ResponseEntity<Object> getMenuList(){
 		List<MenuList> list = service.getMenuList();
         if(list==null) {

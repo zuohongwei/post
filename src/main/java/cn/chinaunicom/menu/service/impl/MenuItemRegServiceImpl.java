@@ -1,9 +1,9 @@
 package cn.chinaunicom.menu.service.impl;
 
 import cn.chinaunicom.menu.entity.MenuList;
-import cn.chinaunicom.menu.entity.MenuitemReg;
-import cn.chinaunicom.menu.dao.MenuitemRegMapper;
-import cn.chinaunicom.menu.service.MenuitemRegService;
+import cn.chinaunicom.menu.entity.MenuItemReg;
+import cn.chinaunicom.menu.dao.MenuItemRegMapper;
+import cn.chinaunicom.menu.service.MenuItemRegService;
 import cn.chinaunicom.platform.service.impl.HrServiceImpl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +19,18 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
  * @since 2018-09-19
  */
 @Service
-public class MenuitemRegServiceImpl extends HrServiceImpl<MenuitemRegMapper, MenuitemReg> implements MenuitemRegService {
+public class MenuItemRegServiceImpl extends HrServiceImpl<MenuItemRegMapper, MenuItemReg> implements MenuItemRegService {
 
 	@Autowired
-	MenuitemRegMapper mapper;
+	MenuItemRegMapper mapper;
 	
 	@Override
-	public List<MenuitemReg> getMenuitemRegList() {
-		return mapper.selectList(new EntityWrapper<MenuitemReg>().eq("1", "1").orderBy("code"));
+	public List<MenuItemReg> getMenuitemRegList() {
+		return mapper.selectList(new EntityWrapper<MenuItemReg>().eq("1", "1").orderBy("code"));
 	}
 
 	@Override
-	public Integer saveMenuitemReg(MenuitemReg entity) {
+	public Integer saveMenuitemReg(MenuItemReg entity) {
 		return mapper.insert(entity);
 	}
 

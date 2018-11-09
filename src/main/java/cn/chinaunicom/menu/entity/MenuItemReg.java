@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @TableName("hr_menuitem_reg")
 @ApiModel("菜单注册")
-public class MenuitemReg extends Model<MenuitemReg> {
+public class MenuItemReg extends Model<MenuItemReg> {
 
     private static final long serialVersionUID = 1L;
 

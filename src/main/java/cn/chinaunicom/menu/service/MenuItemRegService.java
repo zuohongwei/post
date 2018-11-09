@@ -1,7 +1,7 @@
 package cn.chinaunicom.menu.service;
 
 import cn.chinaunicom.menu.entity.MenuList;
-import cn.chinaunicom.menu.entity.MenuitemReg;
+import cn.chinaunicom.menu.entity.MenuItemReg;
 import cn.chinaunicom.platform.service.IHrService;
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
  * @author zuohongwei
  * @since 2018-09-19
  */
-public interface MenuitemRegService extends IHrService<MenuitemReg> {
+public interface MenuItemRegService extends IHrService<MenuItemReg> {
 
-	public List<MenuitemReg> getMenuitemRegList();
+	public List<MenuItemReg> getMenuitemRegList();
 	
-	public Integer saveMenuitemReg(MenuitemReg entity);
+	public Integer saveMenuitemReg(MenuItemReg entity);
 	
 	public List<MenuList> getMenuList();
 	

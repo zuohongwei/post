@@ -52,7 +52,7 @@ public class MenuItemReg extends Model<MenuItemReg> {
       * 图标
       */
       @ApiModelProperty(value="图标")
-    private String iconUrl;
+    private String iconurl;
 
     public Long getPid() {
 		return pid;
@@ -63,11 +63,11 @@ public class MenuItemReg extends Model<MenuItemReg> {
 	}
 
 	public String getIconUrl() {
-		return iconUrl;
+		return iconurl;
 	}
 
 	public void setIconUrl(String iconUrl) {
-		this.iconUrl = iconUrl;
+		this.iconurl = iconUrl;
 	}
 
 	public Long getId() {

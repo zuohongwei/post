@@ -294,23 +294,21 @@
 
     </select>
 
-    <select id="searchNewGroupPostList" >
+    <select id="getPostListForExcel2" resultMap="BaseResultMap">
         <![CDATA[
-			SELECT EPJV.POS_ID AS posId,
-		           EPJV.POS_NAME AS posName,
-		           EPJV.POS_CATE_ID AS posCateId,
-		           EPJV.CNAME AS cName,
-		           EPJV.POS_SUBCATE_ID AS posSubcateId,
-		           EPJV.SNAME AS sName,
-		           EPJV.LEVEL_CODE AS levelCode,
-		           EPJV.ORG_LEVEL AS orgLevel,
-		           EPJV.CORE_FLAG AS coreFlag,
-		           EPJV.DEGREE_CODE AS degreeCode,
-		           EPJV.EDUCATION_DEGREE AS educationDegree,
-		           EPJV.KSTR AS kstr,
-
+			SELECT EPJV.POS_ID ,
+		           EPJV.POS_NAME  ,
+		           EPJV.POS_CATE_ID  ,
+		           EPJV.CNAME  ,
+		           EPJV.POS_SUBCATE_ID  ,
+		           EPJV.SNAME  ,
+		           EPJV.LEVEL_CODE  ,
+		           EPJV.ORG_LEVEL  ,
+		           EPJV.CORE_FLAG  ,
+		           EPJV.DEGREE_CODE  ,
+		           EPJV.EDUCATION_DEGREE  ,
+		           EPJV.KSTR  ,
                     case when ifnull(C.SNUM, 0)=0 then '否' else '是' end,
-
                    date_format(EPJV.ACTIVE_START_DATE,'%Y-%m-%d %H:%i:%s') as ACTIVE_START_DATE,
 		           date_format(EPJV.ACTIVE_END_DATE,'%Y-%m-%d %H:%i:%s')as ACTIVE_END_DATE
 

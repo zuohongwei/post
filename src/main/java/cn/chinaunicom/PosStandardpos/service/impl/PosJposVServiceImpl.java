@@ -27,7 +27,7 @@ public class PosJposVServiceImpl extends HrServiceImpl<PosJposVMapper, PosJposV>
 
 	@Resource
 	PosJposVMapper mapper;
-	
+
 	@Override
 	public List<PosJposV> getPosJposVList() {
 		return mapper.selectList(new EntityWrapper<PosJposV>().eq("1", "1"));
@@ -37,12 +37,12 @@ public class PosJposVServiceImpl extends HrServiceImpl<PosJposVMapper, PosJposV>
 	public Integer savePosJposV(PosJposV entity) {
 		return mapper.insert(entity);
 	}
-	
+
 	@Override
 	public Integer updatePosJposV(PosJposV entity) {
 		return mapper.updateById(entity);
 	}
-	
+
 	@Override
 	public Integer deletePosJposV(Long id) {
 		return mapper.deleteById(id);
@@ -83,13 +83,11 @@ public class PosJposVServiceImpl extends HrServiceImpl<PosJposVMapper, PosJposV>
 	@Override
 	public List<PosJposV> getPostListForExcel2(Map<String, Object> params) {
 		Object object = params.get("posFlag");
-		List<PosJposV> posList = null;
+		List<PosJposV> posList = new ArrayList<>();
 		if(object==null){
-
 		}else{
 			posList = mapper.getPostListForExcel2(params);
 		}
 		return posList;
-
 	}
 }

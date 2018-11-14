@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.resplist.dao.EhrcucPosElementStructureMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.resplist.entity.EhrcucPosElementStructure">
+        <id column="STRUCTURE_ID" property="structureId" />
+        <result column="VERSION_ID" property="versionId" />
+        <result column="ELEMENT_ID_PARENT" property="elementIdParent" />
+        <result column="ELEMENT_ID_CHILD" property="elementIdChild" />
+        <result column="CREATED_BY" property="createdBy" />
+        <result column="CREATION_DATE" property="creationDate" />
+        <result column="LAST_UPDATED_BY" property="lastUpdatedBy" />
+        <result column="LAST_UPDATE_DATE" property="lastUpdateDate" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+    </resultMap>
+    
+    <!-- 职责树查询用结果集 -->
+    <resultMap id="MenuItemTree" type="cn.chinaunicom.resplist.entity.MenuItemTree">
+       <result property="menuId" column="menuId" />
+	   <result property="menuName" column="menuName" />
+	   <result property="level" column="levelType" />
+	   <result property="pMenuId" column="pMenuId" />
+
+    </resultMap>
+    <!-- 职责树查询用结果集 -->
+    <resultMap id="RespsInfo" type="cn.chinaunicom.resplist.entity.RespsInfo">
+       <result property="SEQ" column="SEQ" />
+	   <result property="CSEQ" column="CSEQ" />
+	   <result property="MAJOR" column="MAJOR" />
+	   <result property="KEYRESP" column="KEYRESP" />
+	   <result property="JZRANK" column="JZRANK" />
+	   <result property="JTRANK" column="JTRANK" />
+	   <result property="SFRANK" column="SFRANK" />
+	   <result property="DSRANK" column="DSRANK" />
+	   <result property="QXRANK" column="QXRANK" />
+	   <result property="LEVELTYPE" column="LEVELTYPE" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        STRUCTURE_ID, VERSION_ID, ELEMENT_ID_PARENT, ELEMENT_ID_CHILD, CREATED_BY, CREATION_DATE, LAST_UPDATED_BY, LAST_UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10
+    </sql>
+    <!-- 查询关键职责根节点 -->
+	<select id="queryBaseRange" resultMap="MenuItemTree">
+		SELECT
+			a.element_id AS menuId,
+			a.element_name menuName,
+			a.element_type levelType,
+			ifnull( a.pid,- 9999 ) pMenuId 
+		FROM
+		 (
+		SELECT
+			e.*,
+			s.element_id_parent AS pid 
+		FROM
+			ehrcuc_pos_element e
+			LEFT JOIN ehrcuc_pos_element_structure s ON e.element_id = s.element_id_child 
+		WHERE
+			e.element_type = '10' 
+			AND  SYSDATE() BETWEEN ifnull ( e.DATE_FROM, SYSDATE() - 1 ) 
+			AND ifnull ( e.DATE_TO, SYSDATE() + 1 ) 
+		 ) a 
+		ORDER BY 
+			a.element_id
+	</select>
+	<!-- 查询结果列 -->
+	<select id="getRespRange" resultMap="MenuItemTree">
+	   SELECT
+			a.element_id AS menuId,
+			a.element_name menuName,
+			a.element_type levelType,
+			ifnull ( a.pid,- 9999 ) pMenuId 
+		FROM
+		(
+		SELECT
+			e.*,
+			s.element_id_parent AS pid 
+		FROM
+			ehrcuc_pos_element e
+			LEFT JOIN ehrcuc_pos_element_structure s ON e.element_id = s.element_id_child 
+		WHERE
+			s.element_id_parent = #{menuId}
+			
+			AND  SYSDATE() BETWEEN ifnull ( e.DATE_FROM, SYSDATE() - 1 ) 
+			AND ifnull ( e.DATE_TO, SYSDATE() + 1 ) 
+		) a 
+		ORDER BY
+			a.element_id
+	</select>
+	<select id="queryRespsInfo" resultMap="RespsInfo">
+		SELECT
+			epe.element_name SEQ,
+			epe2.element_name CSEQ,
+			epe3.element_name MAJOR,
+			epe4.element_name KEYRESP,
+			epe4.attribute5 JZRANK,
+			epe4.attribute6 JTRANK,
+			epe4.attribute7 SFRANK,
+			epe4.attribute8 DSRANK,
+			epe4.attribute9 QXRANK,
+			REPLACE (REPLACE ( REPLACE ( REPLACE ( epe5.attribute1, 'J', '集团' ), 'S', '省' ), 'D', '市' ),'X','县' ) LEVELTYPE 
+		FROM
+			ehrcuc_pos_element epe,
+			ehrcuc_pos_element_structure pes,
+			ehrcuc_pos_element epe2,
+			ehrcuc_pos_element_structure pes2,
+			ehrcuc_pos_element epe3,
+			ehrcuc_pos_element_structure pes3,
+			ehrcuc_pos_element epe4,
+			ehrcuc_pos_element_structure pes4,
+			ehrcuc_pos_element epe5 
+		WHERE
+			epe.element_type = '10' 
+			AND epe.element_id = pes.element_id_parent 
+			AND epe2.element_type = '20' 
+			AND epe2.element_id = pes.element_id_child 
+			AND pes2.element_id_parent = epe2.element_id 
+			AND epe3.element_type = '30' 
+			AND pes2.element_id_child = epe3.element_id 
+			AND pes3.element_id_parent = epe3.element_id 
+			<if test="sequence!=null and sequence!='' ">
+			AND (epe3.element_id in (${sequence}) or epe.element_id in (${sequence}) or epe2.element_id in (${sequence}) )
+			</if>
+			<if test="respName!=null and respName!=''">
+			AND epe4.element_name like '%${respName}%' 
+			</if>
+			<if test="levelType!=null and levelType!=''">
+			AND epe5.attribute1 LIKE '%${levelType}%'
+			</if>
+			AND sysdate( ) BETWEEN ifnull( epe.date_from, sysdate( ) - 1 ) 
+			AND ifnull( epe.date_to, sysdate( ) + 1 ) 
+			AND epe4.element_type = '40' 
+			AND pes3.element_id_child = epe4.element_id 
+			AND epe4.element_id = pes4.element_id_parent 
+			AND epe5.element_type = '50' 
+			AND epe5.element_id = pes4.element_id_child 
+		ORDER BY
+			epe.element_id
+		limit ${pageNum},${pageSize}
+	</select>
+	
+	<select id="CountRespsInfo" resultType="int">
+		SELECT
+			count(*)
+		FROM
+			ehrcuc_pos_element epe,
+			ehrcuc_pos_element_structure pes,
+			ehrcuc_pos_element epe2,
+			ehrcuc_pos_element_structure pes2,
+			ehrcuc_pos_element epe3,
+			ehrcuc_pos_element_structure pes3,
+			ehrcuc_pos_element epe4,
+			ehrcuc_pos_element_structure pes4,
+			ehrcuc_pos_element epe5 
+		WHERE
+			epe.element_type = '10' 
+			AND epe.element_id = pes.element_id_parent 
+			AND epe2.element_type = '20' 
+			AND epe2.element_id = pes.element_id_child 
+			AND pes2.element_id_parent = epe2.element_id 
+			AND epe3.element_type = '30' 
+			AND pes2.element_id_child = epe3.element_id 
+			AND pes3.element_id_parent = epe3.element_id 
+			<if test="sequence!=null and sequence!=''">
+			AND (epe3.element_id in (${sequence}) or epe.element_id in (${sequence}) or epe2.element_id in (${sequence}) )
+			</if>
+			<if test="respName!=null and respName!=''">
+			AND epe4.element_name like '%${respName}%' 
+			</if>
+			<if test="levelType!=null and levelType!=''">
+			AND epe5.attribute1 LIKE '%${levelType}%'
+			</if>
+			AND sysdate( ) BETWEEN ifnull( epe.date_from, sysdate( ) - 1 ) 
+			AND ifnull( epe.date_to, sysdate( ) + 1 ) 
+			AND epe4.element_type = '40' 
+			AND pes3.element_id_child = epe4.element_id 
+			AND epe4.element_id = pes4.element_id_parent 
+			AND epe5.element_type = '50' 
+			AND epe5.element_id = pes4.element_id_child 
+		ORDER BY
+			epe.element_id
+	</select>
+	
+</mapper>

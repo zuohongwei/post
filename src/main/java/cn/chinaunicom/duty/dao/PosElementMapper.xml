@@ -145,4 +145,56 @@
 					    order by epe.element_id ]]>
 		
 		</select>
+		
+		<select id="getPosElementPagListCount" resultType="java.lang.Integer" >
+		<![CDATA[
+					   SELECT  COUNT(1)
+			    FROM ehrcuc_pos_element epe ,
+			         ehrcuc_pos_element_structure pes ,
+			         ehrcuc_pos_element epe2 ,
+			         ehrcuc_pos_element_structure pes2 ,
+			         ehrcuc_pos_element epe3 ,
+			         ehrcuc_pos_element_structure pes3 ,
+			         ehrcuc_pos_element epe4 ,
+			         ehrcuc_pos_element_structure pes4 ,
+			         ehrcuc_pos_element epe5
+			    WHERE epe.element_type = '10'
+			    and epe.element_id = pes.element_id_parent
+			    and epe2.element_type = '20'
+			    and epe2.element_id = pes.element_id_child
+			    and pes2.element_id_parent = epe2.element_id
+			    and epe3.element_type = '30'
+			    and pes2.element_id_child = epe3.element_id
+			    and pes3.element_id_parent = epe3.element_id ]]>
+		    <if test="sequence !=null and sequence != ''">
+		       and (epe3.element_id in (${sequence}) or epe.element_id in (${sequence}) or epe2.element_id in (${sequence}) )
+		    </if>
+		    <if test="respName != null and respName!= ''">
+		        and  epe4.element_name like concat("%", #{respName}, "%")
+		    </if>
+		    <if test="levelType !=null and levelType != ''">
+		        and epe5.attribute1 like concat("%", #{levelType}, "%")
+		    </if>
+		    <if test="cRespName !=null and cRespName != ''">
+		        and epe5.element_name like concat("%", #{cRespName}, "%")
+		    </if>
+		
+			<if test="status=='1'.toString()">
+			and DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') between IFNULL(epe.date_from,date_sub(now(),INTERVAL 1 DAY )) and IFNULL(epe.date_to,DATE_ADD( sysdate(), INTERVAL 1 DAY ))
+			</if>
+		    <if test="status=='2'.toString()">
+		        <![CDATA[
+		        			and DATE_FORMAT(ifnull(epe.date_to,DATE_ADD( sysdate(), INTERVAL 1 DAY ))) between DATE_FORMAT('1970/01/01','%Y-%m-%d') and DATE_FORMAT(sysdate(),'%Y-%m-%d')
+					    	]]>
+			</if>
+		
+			<![CDATA[
+					    and epe4.element_type = '40'
+					    and pes3.element_id_child = epe4.element_id
+					    and epe4.element_id = pes4.element_id_parent
+					    and epe5.element_type = '50'
+					    and epe5.element_id = pes4.element_id_child
+					    order by epe.element_id ]]>
+		
+		</select>
 </mapper>

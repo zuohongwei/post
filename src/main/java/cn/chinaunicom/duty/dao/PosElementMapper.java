@@ -29,4 +29,6 @@ public interface PosElementMapper extends HrBaseMapper<PosElement> {
 
 	List<PosElementEmp> getPosElementPagList(Map<String, Object> params);
 
+	Integer getPosElementPagListCount(Map<String, Object> params);
+
 }

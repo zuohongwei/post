@@ -49,4 +49,9 @@ public class PosElementServiceImpl extends HrServiceImpl<PosElementMapper, PosEl
 		return mapper.getPosElementPagList(params);
 	}
 
+	@Override
+	public Integer getPosElementPagListCount(Map<String, Object> params) {
+		return mapper.getPosElementPagListCount(params);
+	}
+
 }

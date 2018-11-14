@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.PosStandardpos.dao.LookupsMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.PosStandardpos.entity.Lookups">
+        <id column="LOOKUP_ID" property="lookupId" />
+        <result column="LOOKUP_TYPE" property="lookupType" />
+        <result column="LOOKUP_CODE" property="lookupCode" />
+        <result column="MEANING" property="meaning" />
+        <result column="ENABLED_FLAG" property="enabledFlag" />
+        <result column="START_DATE_ACTIVE" property="startDateActive" />
+        <result column="END_DATE_ACTIVE" property="endDateActive" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="CREATE_BY" property="createBy" />
+        <result column="CREATE_DATE" property="createDate" />
+        <result column="UPDATE_BY" property="updateBy" />
+        <result column="UPDATE_DATE" property="updateDate" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="ROW_NUM" property="rowNum" />
+        <result column="TAG" property="tag" />
+        <result column="GROUP_NAME" property="groupName" />
+        <result column="PARENT_CODE" property="parentCode" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="cn.chinaunicom.config.TypeItemInfo">
+        <result property="elementId" column="elementId" />
+        <result property="elementName" column="elementName"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        LOOKUP_ID, LOOKUP_TYPE, LOOKUP_CODE, MEANING, ENABLED_FLAG, START_DATE_ACTIVE, END_DATE_ACTIVE, DESCRIPTION, CREATE_BY, CREATE_DATE, UPDATE_BY, UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, ROW_NUM, TAG, GROUP_NAME, PARENT_CODE
+    </sql>
+    <!-- 查询指定值集类型的值集列表 -->
+    <!--<select id="findTypeItemInfos"  resultMap="BaseResultMap2">-->
+	<!--<![CDATA[-->
+<!--SELECT-->
+	<!--EPE.ELEMENT_ID AS elementId,-->
+	<!--EPE.ELEMENT_NAME AS elementName-->
+<!--FROM-->
+	<!--EHRCUC_POS_ELEMENT EPE-->
+<!--WHERE-->
+	<!--1 = 1-->
+	<!--AND EPE.ELEMENT_TYPE = '10'-->
+	<!--AND date_format ( now(), '%Y-%m-%d' )-->
+	<!--BETWEEN ifnull ( epe.Date_From, date_sub( date_format( now(), '%Y-%m-%d' ) , INTERVAL  1 DAY ) )-->
+	<!--AND ifnull ( epe.Date_To, DATE_ADD( now(), INTERVAL 1 DAY ) )-->
+
+	<!--]]>-->
+	<!--</select>-->
+
+    <select id="findTypeItemInfos" resultMap="BaseResultMap">
+	<![CDATA[
+		select t.row_num,t.lookup_code, t.meaning, t.description
+		  from hades_lookups t
+		 where t.enabled_flag = 'Y'
+		 and t.lookup_type = #{lookupType}
+		  and t.tag is null
+
+		  and  DATE_FORMAT(now(), '%Y-%m-%d %H:%i:%s') between DATE_FORMAT (ifnull(t.start_date_active, date_sub( now( ) , INTERVAL  1 DAY )), '%Y-%m-%d %H:%i:%s') and DATE_FORMAT(ifnull(t.end_date_active,DATE_ADD( now( ), INTERVAL 1 DAY )), '%Y-%m-%d %H:%i:%s')
+		 order by t.row_num
+	]]>
+	</select>
+</mapper>

@@ -48,5 +48,8 @@ public class PosElementServiceImpl extends HrServiceImpl<PosElementMapper, PosEl
 	public List<PosElementEmp> getPosElementPagList(Map<String, Object> params) {
 		return mapper.getPosElementPagList(params);
 	}
-
+	@Override
+	public List<PosElement> getCateList() {
+		return mapper.getCateList();
+	}
 }

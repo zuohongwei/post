@@ -6,7 +6,7 @@ import cn.chinaunicom.resplist.entity.EhrcucPosElementStructure;
 import cn.chinaunicom.resplist.entity.MenuItemTree;
 import cn.chinaunicom.resplist.entity.RespsInfo;
 import cn.chinaunicom.resplist.service.EhrcucPosElementStructureService;
-import cn.chinaunicom.utils.dao.TreeDataMapper;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +29,7 @@ public class EhrcucPosElementStructureServiceImpl extends HrServiceImpl<EhrcucPo
 	@Resource
     EhrcucPosElementStructureMapper mapper;
 
-	@Resource
-	TreeDataMapper					treemapper;
+
 
 	@Override
 	public List<EhrcucPosElementStructure> getEhrcucPosElementStructureList() {

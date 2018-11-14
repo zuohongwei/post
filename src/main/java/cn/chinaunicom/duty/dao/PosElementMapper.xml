@@ -145,4 +145,20 @@
 					    order by epe.element_id ]]>
 		
 		</select>
+	<select id="getCateList" resultMap="BaseResultMap" >
+			<![CDATA[
+			SELECT
+	EPE.ELEMENT_ID ,
+	EPE.ELEMENT_NAME
+FROM
+	EHRCUC_POS_ELEMENT EPE
+WHERE
+	1 = 1
+	AND EPE.ELEMENT_TYPE = '10'
+	AND date_format ( now( ), '%Y-%m-%d %H:%i:%s' )
+	BETWEEN ifnull ( epe.Date_From, date_sub( date_format( now( ), '%Y-%m-%d %H:%i:%s' ) , INTERVAL  1 DAY ) )
+	AND ifnull ( epe.Date_To, DATE_ADD( now( ), INTERVAL 1 DAY ) )
+
+			]]>
+		</select>
 </mapper>

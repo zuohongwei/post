@@ -1,10 +1,11 @@
 package cn.chinaunicom.resplist.controller;
 
+import cn.chinaunicom.common.FileUtil;
 import cn.chinaunicom.platform.utils.MessageResponse;
 import cn.chinaunicom.resplist.entity.EhrcucPosElementStructure;
 import cn.chinaunicom.resplist.entity.RespsInfo;
 import cn.chinaunicom.resplist.service.EhrcucPosElementStructureService;
-import cn.chinaunicom.utils.FileUtil;
+
 import com.baomidou.mybatisplus.plugins.Page;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;

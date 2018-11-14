@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.duty.dao.PosEmpElementMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.duty.entity.PosEmpElement">
+        <result column="ASSIGMENT_ID" property="assigmentId" />
+        <result column="VERSION_ID" property="versionId" />
+        <result column="PERSON_ID" property="personId" />
+        <result column="EBS_ASS_ID" property="ebsAssId" />
+        <result column="ELEMENT_ID" property="elementId" />
+        <result column="ROLE_ID" property="roleId" />
+        <result column="OBJECT_ID" property="objectId" />
+        <result column="WEIGHT" property="weight" />
+        <result column="ANALYSE_CONCATENATE" property="analyseConcatenate" />
+        <result column="USE_CONCATENATE" property="useConcatenate" />
+        <result column="CREATED_BY" property="createdBy" />
+        <result column="CREATION_DATE" property="creationDate" />
+        <result column="LAST_UPDATED_BY" property="lastUpdatedBy" />
+        <result column="LAST_UPDATE_DATE" property="lastUpdateDate" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="SUB_RESP_STR" property="subRespStr" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ASSIGMENT_ID, VERSION_ID, PERSON_ID, EBS_ASS_ID, ELEMENT_ID, ROLE_ID, OBJECT_ID, WEIGHT, ANALYSE_CONCATENATE, USE_CONCATENATE, CREATED_BY, CREATION_DATE, LAST_UPDATED_BY, LAST_UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, SUB_RESP_STR
+    </sql>
+
+</mapper>

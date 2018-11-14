@@ -1,0 +1,20 @@
+package ${package.Mapper};
+
+import ${package.Entity}.${entity};
+import cn.chinaunicom.platform.dao.HrBaseMapper;
+
+/**
+ * <p>
+ * $!{table.comment} Mapper 接口
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${kotlin})
+interface ${table.mapperName} : MyBaseMapper<${entity}>
+#else
+public interface ${table.mapperName} extends HrBaseMapper<${entity}> {
+
+}
+#end

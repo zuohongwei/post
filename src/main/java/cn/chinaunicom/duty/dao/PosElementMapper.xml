@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.duty.dao.PosElementMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.duty.entity.PosElement">
+        <id column="ELEMENT_ID" property="elementId" />
+        <result column="ELEMENT_CODE" property="elementCode" />
+        <result column="ELEMENT_NAME" property="elementName" />
+        <result column="ELEMENT_TYPE" property="elementType" />
+        <result column="DATE_FROM" property="dateFrom" />
+        <result column="DATE_TO" property="dateTo" />
+        <result column="CREATED_BY" property="createdBy" />
+        <result column="CREATION_DATE" property="creationDate" />
+        <result column="LAST_UPDATED_BY" property="lastUpdatedBy" />
+        <result column="LAST_UPDATE_DATE" property="lastUpdateDate" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="ATTRIBUTE11" property="attribute11" />
+        <result column="ATTRIBUTE12" property="attribute12" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ELEMENT_ID, ELEMENT_CODE, ELEMENT_NAME, ELEMENT_TYPE, DATE_FROM, DATE_TO, CREATED_BY, CREATION_DATE, LAST_UPDATED_BY, LAST_UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, ATTRIBUTE11, ATTRIBUTE12
+    </sql>
+    
+    <select id="getElementList"  resultMap="BaseResultMap">
+	     SELECT EPE.ELEMENT_ID as posCateId,
+		       EPE.ELEMENT_NAME   as posCateName,
+		       EPE.ELEMENT_TYPE   as type,
+		       0                  as parentId,
+		       EPE.ELEMENT_CODE   AS code,
+		       (SELECT COUNT(1)
+		          FROM EHRCUC_POS_ELEMENT_STRUCTURE S
+		         WHERE S.ELEMENT_ID_PARENT = EPE.ELEMENT_ID
+		           AND S.VERSION_ID = #{versionId}
+		           AND S.ATTRIBUTE1 IS NULL) AS posSubcateCount
+		  FROM EHRCUC_POS_ELEMENT EPE,
+		  	   EHRCUC_POS_ELEMENT_STRUCTURE EPES
+
+		 WHERE 1 = 1
+		   AND EPE.ELEMENT_TYPE = '10'
+		   AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+		   AND EPES.VERSION_ID = #{versionId}
+		 ORDER BY EPE.ELEMENT_CODE
+	</select>
+	
+	<select id="getSubList"  resultMap="BaseResultMap">
+		 SELECT EPE.ELEMENT_ID         as posCateId,
+			       EPE.ELEMENT_NAME       as posCateName,
+			       EPE.ELEMENT_TYPE       as type,
+			       EPES.ELEMENT_ID_PARENT as parentId,
+			       (SELECT E.ELEMENT_NAME
+	                  FROM EHRCUC_POS_ELEMENT E
+	                 WHERE E.ELEMENT_ID = EPES.ELEMENT_ID_PARENT) AS parentName,
+			       EPE.ELEMENT_CODE       AS code,
+		       (SELECT COUNT(1)
+		          FROM EHRCUC_POS_ELEMENT_STRUCTURE S
+		         WHERE S.ELEMENT_ID_PARENT = EPE.ELEMENT_ID
+		           AND S.VERSION_ID = #{versionId}
+		           AND S.ATTRIBUTE1 IS NULL) AS majorCount
+			  FROM EHRCUC_POS_ELEMENT           EPE,
+			       EHRCUC_POS_ELEMENT_STRUCTURE EPES
+			 WHERE 1 = 1
+			   AND EPE.ELEMENT_TYPE = '20'
+			   AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+			   AND EPES.VERSION_ID = #{versionId}
+			   AND EPES.ATTRIBUTE1 IS NULL
+			   and EPES.ELEMENT_ID_PARENT = #{posCateId}
+			   ORDER BY EPE.ELEMENT_CODE
+	</select>
+	
+	
+	<select id="getPosElementPagList" resultType="cn.chinaunicom.duty.entity.PosElementEmp" >
+		<![CDATA[
+					    SELECT  epe.element_name SEQ,
+					            epe2.element_name CSEQ,
+					            epe3.element_name MAJOR,
+					            epe4.element_name KEYRESP,
+					            epe4.attribute2 ETU,
+					            epe4.attribute3 WORKEXP,
+					            epe4.attribute4 ISCORE,
+					            epe4.attribute5 JZRANK,
+				                epe4.attribute6 JTRANK,
+				                epe4.attribute7 SFRANK,
+				                epe4.attribute8 DSRANK,
+				                epe4.attribute9 QXRANK,
+				                epe4.attribute4 ISCORE,
+					            epe5.element_name CKEYRESP,
+					            replace(replace(replace(replace(epe5.attribute1,'J','集团' ),'S','省'),'D','市'),'X','县') LEVELTYPE
+					    FROM ehrcuc_pos_element epe ,
+					         ehrcuc_pos_element_structure pes ,
+					         ehrcuc_pos_element epe2 ,
+					         ehrcuc_pos_element_structure pes2 ,
+					         ehrcuc_pos_element epe3 ,
+					         ehrcuc_pos_element_structure pes3 ,
+					         ehrcuc_pos_element epe4 ,
+					         ehrcuc_pos_element_structure pes4 ,
+					         ehrcuc_pos_element epe5
+					    WHERE epe.element_type = '10'
+					    and epe.element_id = pes.element_id_parent
+					    and epe2.element_type = '20'
+					    and epe2.element_id = pes.element_id_child
+					    and pes2.element_id_parent = epe2.element_id
+					    and epe3.element_type = '30'
+					    and pes2.element_id_child = epe3.element_id
+					    and pes3.element_id_parent = epe3.element_id ]]>
+		    <if test="sequence !=null and sequence != ''">
+		       and (epe3.element_id in (${sequence}) or epe.element_id in (${sequence}) or epe2.element_id in (${sequence}) )
+		    </if>
+		    <if test="respName != null and respName!= ''">
+		        and  epe4.element_name like concat("%", #{respName}, "%")
+		    </if>
+		    <if test="levelType !=null and levelType != ''">
+		        and epe5.attribute1 like concat("%", #{levelType}, "%")
+		    </if>
+		    <if test="cRespName !=null and cRespName != ''">
+		        and epe5.element_name like concat("%", #{cRespName}, "%")
+		    </if>
+		
+			<if test="status=='1'.toString()">
+			and DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') between IFNULL(epe.date_from,date_sub(now(),INTERVAL 1 DAY )) and IFNULL(epe.date_to,DATE_ADD( sysdate(), INTERVAL 1 DAY ))
+			</if>
+		    <if test="status=='2'.toString()">
+		        <![CDATA[
+		        			and DATE_FORMAT(ifnull(epe.date_to,DATE_ADD( sysdate(), INTERVAL 1 DAY ))) between DATE_FORMAT('1970/01/01','%Y-%m-%d') and DATE_FORMAT(sysdate(),'%Y-%m-%d')
+					    	]]>
+			</if>
+		
+			<![CDATA[
+					    and epe4.element_type = '40'
+					    and pes3.element_id_child = epe4.element_id
+					    and epe4.element_id = pes4.element_id_parent
+					    and epe5.element_type = '50'
+					    and epe5.element_id = pes4.element_id_child
+					    order by epe.element_id ]]>
+		
+		</select>
+</mapper>

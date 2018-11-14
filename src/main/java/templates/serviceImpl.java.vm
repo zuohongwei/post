@@ -1,0 +1,51 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>(), ${table.serviceName} {
+
+}
+#else
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+	@Autowired
+	${table.mapperName} mapper;
+	
+	@Override
+	public List<${entity}> get${entity}List() {
+		return mapper.selectList(new EntityWrapper<${entity}>().eq("1", "1"));
+	}
+
+	@Override
+	public Integer save${entity}(${entity} entity) {
+		return mapper.insert(entity);
+	}
+	
+	@Override
+	public Integer update${entity}(${entity} entity) {
+		return mapper.updateById(entity);
+	}
+	
+	@Override
+	public Integer delete${entity}(Long id) {
+		return mapper.deleteById(id);
+	}
+}
+#end

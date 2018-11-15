@@ -153,8 +153,8 @@ public class EhrcucPosElementStructureController {
 			httpMethod = "POST")
 	@PostMapping("/exportRespsInfo")
 	@ResponseBody
-	public void exportRespsInfo(@RequestParam("sequence") String sequence, @RequestParam("respName") String respName, @RequestParam("status") String status,
-			@RequestParam("levelType") String[] levelTypes, @RequestParam("pageSize") String pageSize, @RequestParam("pageNum") String pageNum, HttpServletResponse resp) {
+	public void exportRespsInfo(@RequestParam(value="sequence",required=false) String sequence, @RequestParam(value="respName",required=false) String respName, @RequestParam(value="status",required=false) String status,
+			@RequestParam(value="levelType",required=false) String[] levelTypes, @RequestParam("pageSize") String pageSize, @RequestParam("pageNum") String pageNum, HttpServletResponse resp) {
 		String levelType = "";
 		if (levelTypes != null && levelTypes.length > 0)
 		{

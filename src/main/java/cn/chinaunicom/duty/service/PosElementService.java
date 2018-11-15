@@ -1,3 +1,4 @@
+
 package cn.chinaunicom.duty.service;
 
 import java.util.List;
@@ -28,5 +29,10 @@ public interface PosElementService extends IHrService<PosElement> {
 	List<PosElement> getPosElementPagList(Page<PosElement> objectPage, Map<String, Object> params);
 
 	List<PosElementEmp> getPosElementPagList(Map<String, Object> params);
+
 	List<PosElement> getCateList();
+
+	Integer getPosElementPagListCount(Map<String, Object> params);
 }
+
+

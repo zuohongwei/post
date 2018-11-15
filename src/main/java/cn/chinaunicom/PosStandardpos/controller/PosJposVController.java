@@ -505,8 +505,8 @@ public class PosJposVController {
 		params.put("coreFlag", coreFlag);
 		params.put("educationDegree", educationDegree);
 
-		List<PosJposV> postList = new ArrayList<PosJposV>();
-		postList = service.getPostListForExcel2(params);
+
+		List<PosJposV> 	postList = service.getPostListForExcell(params);
 		String sheetName= "集团基准岗位表";
 		FileUtil.exportExcel(postList,sheetName,sheetName, PosJposV.class,fileName,resp);
 	}

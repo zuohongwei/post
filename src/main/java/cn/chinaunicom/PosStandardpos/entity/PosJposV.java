@@ -36,7 +36,7 @@ public class PosJposV extends Model<PosJposV> {
      */
      @ApiModelProperty(value="岗位序列ID")
     @TableField("POS_CATE_ID")
-    private BigDecimal posCateId;
+    private Integer posCateId;
     @Excel(name = "岗位序列")
     @ApiModelProperty(value="岗位序列")
     @TableField("CNAME")
@@ -46,7 +46,7 @@ public class PosJposV extends Model<PosJposV> {
      */
 
     @TableField("POS_SUBCATE_ID")
-    private BigDecimal posSubcateId;
+    private Integer posSubcateId;
     @Excel(name = "子序列")
     @ApiModelProperty(value="子序列")
     @TableField("SNAME")
@@ -99,20 +99,30 @@ public class PosJposV extends Model<PosJposV> {
     private Date activeEndDate;
 
 
-    public BigDecimal getPosId() {
-        return posId;
-    }
+
 
     public void setPosId(BigDecimal posId) {
         this.posId = posId;
     }
 
-    public BigDecimal getPosCateId() {
+    public Integer getPosCateId() {
         return posCateId;
     }
 
-    public void setPosCateId(BigDecimal posCateId) {
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public BigDecimal getPosId() {
+        return posId;
+    }
+
+    public void setPosCateId(Integer posCateId) {
         this.posCateId = posCateId;
+    }
+
+    public void setPosSubcateId(Integer posSubcateId) {
+        this.posSubcateId = posSubcateId;
     }
 
     public String getCname() {
@@ -123,13 +133,11 @@ public class PosJposV extends Model<PosJposV> {
         this.cname = cname;
     }
 
-    public BigDecimal getPosSubcateId() {
+    public Integer getPosSubcateId() {
         return posSubcateId;
     }
 
-    public void setPosSubcateId(BigDecimal posSubcateId) {
-        this.posSubcateId = posSubcateId;
-    }
+
 
     public String getSname() {
         return sname;

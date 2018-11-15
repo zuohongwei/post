@@ -81,13 +81,12 @@ public class PosJposVServiceImpl extends HrServiceImpl<PosJposVMapper, PosJposV>
 	}
 
 	@Override
-	public List<PosJposV> getPostListForExcel2(Map<String, Object> params) {
-		Object object = params.get("posFlag");
-		List<PosJposV> posList = new ArrayList<>();
-		if(object==null){
-		}else{
-			posList = mapper.getPostListForExcel2(params);
-		}
-		return posList;
+	public List<PosJposV> getPostListForExcell(Map<String, Object> params) {
+            List<PosJposV>   posList1= mapper.getPostListForExcel2(params);
+
+        return posList1;
+
+
 	}
+
 }

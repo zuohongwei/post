@@ -294,8 +294,8 @@
 
     </select>
 
-    <select id="getPostListForExcel2" resultMap="BaseResultMap">
-        <![CDATA[
+    <select id="getPostListForExcell" resultMap="BaseResultMap">
+
 			SELECT EPJV.POS_ID ,
 		           EPJV.POS_NAME  ,
 		           EPJV.POS_CATE_ID  ,
@@ -312,7 +312,7 @@
                    date_format(EPJV.ACTIVE_START_DATE,'%Y-%m-%d %H:%i:%s') as ACTIVE_START_DATE,
 		           date_format(EPJV.ACTIVE_END_DATE,'%Y-%m-%d %H:%i:%s')as ACTIVE_END_DATE
 
-		    ]]>
+
         FROM EHRCUC_POS_JPOS_V EPJV
         left join
         (SELECT EPS.PARENT_POS_ID, COUNT(1) SNUM
@@ -357,4 +357,86 @@
 
         order by EPJV.POS_ID
     </select>
+<select id="getPostListForExcel2" resultMap="BaseResultMap">
+    SELECT EPJV.POS_ID  ,
+    EPJV.POS_NAME  ,
+    EPJV.POS_CATE_ID  ,
+    EPJV.CNAME  ,
+    EPJV.POS_SUBCATE_ID  ,
+    EPJV.SNAME  ,
+    EPJV.LEVEL_CODE  ,
+    EPJV.ORG_LEVEL  ,
+    EPJV.CORE_FLAG  ,
+    EPJV.DEGREE_CODE  ,
+    EPJV.EDUCATION_DEGREE  ,
+    EPJV.KSTR  ,
+
+    case when ifnull(C.SNUM, 0)=0 then '否' else '是' end,
+
+    date_format(EPJV.ACTIVE_START_DATE,'%Y-%m-%d %H:%i:%s') as ACTIVE_START_DATE,
+    date_format(EPJV.ACTIVE_END_DATE,'%Y-%m-%d %H:%i:%s')as ACTIVE_END_DATE
+
+    FROM EHRCUC_POS_JPOS_V EPJV left join
+    (SELECT EPS.PARENT_POS_ID, COUNT(1) SNUM
+    FROM EHRCUC_POS_STANDARDPOS EPS
+    WHERE 1 = 1
+    AND EPS.POS_TYPE = 'S'
+    <if test="eFlag =='Y'">
+        and now() BETWEEN IFNULL(EPJV.ACTIVE_START_DATE,date_sub( now( ) , INTERVAL  1 DAY )) AND IFNULL (EPJV.ACTIVE_END_DATE, DATE_ADD( now( ), INTERVAL 1 DAY ))
+    </if>
+    <if test="eFlag =='N'">
+        and now() NOT BETWEEN IFNULL(EPJV.ACTIVE_START_DATE,date_sub( now( ) , INTERVAL  1 DAY )) AND IFNULL(EPJV.ACTIVE_END_DATE,DATE_ADD( now( ), INTERVAL 1 DAY ))
+    </if>
+    <if test="eFlag =='YN'">
+        and 1 != 1
+    </if>
+    <if test="rangeId !=null and rangeId != ''">
+        and EPS.org_id IN (SELECT RNG.ORGANIZATION_ID
+        FROM HADES_RANGE_ORGANIZATION RNG
+        WHERE RNG.RANGE_ID = #{rangeId})
+    </if>
+
+    GROUP BY EPS.PARENT_POS_ID) C
+    on EPJV.POS_ID = C.PARENT_POS_ID
+    where 1=1
+
+
+    <if test="posCateId !=null and posCateId != ''">
+        and   epjv.pos_cate_id = #{posCateId}
+    </if>
+    <if test="posSubcateId !=null and posSubcateId != ''">
+        and   epjv.pos_subcate_id = #{posSubcateId}
+    </if>
+    <if test="posName !=null and posName != ''">
+        and    epjv.pos_name like concat("%", trim(#{posName}), "%")
+    </if>
+    <if test="mFlag =='是'">
+        AND IFNULL(C.SNUM, 0) > 0
+    </if>
+
+    <if test="mFlag =='否'">
+        AND IFNULL(C.SNUM, 0) = 0
+    </if>
+    and (epjv.level_code like concat('%', #{orgLevelS}, '%')
+    or epjv.level_code like concat('%', #{orgLevelD}, '%')
+    or epjv.level_code like concat('%', #{orgLevelX}, '%'))
+    <if test="educationDegree !=null and educationDegree != ''">
+        and     epjv.degree_code = #{educationDegree}
+    </if>
+    <if test="coreFlag !=null and coreFlag != ''">
+        and     epjv.core_flag = #{coreFlag}
+    </if>
+    <if test="eFlag =='Y'">
+        and now() BETWEEN IFNULL(EPJV.ACTIVE_START_DATE,date_sub( now( ) , INTERVAL  1 DAY )) AND IFNULL (EPJV.ACTIVE_END_DATE, DATE_ADD( now( ), INTERVAL 1 DAY ))
+    </if>
+    <if test="eFlag =='N'">
+        and now() NOT BETWEEN IFNULL(EPJV.ACTIVE_START_DATE,date_sub( now( ) , INTERVAL  1 DAY )) AND IFNULL(EPJV.ACTIVE_END_DATE,DATE_ADD( now( ), INTERVAL 1 DAY ))
+    </if>
+    <if test="eFlag =='YN'">
+        and 1 != 1
+    </if>
+    order by EPJV.POS_ID
+
+
+</select>
 </mapper>

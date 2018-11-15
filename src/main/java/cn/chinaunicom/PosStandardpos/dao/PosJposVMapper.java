@@ -26,5 +26,7 @@ public interface PosJposVMapper extends HrBaseMapper<PosJposV> {
 
     Integer searchGroupPostListCount(HashMap<Object, Object> params);
 
+    List<PosJposV> getPostListForExcell(Map<String, Object> params);
+
     List<PosJposV> getPostListForExcel2(Map<String, Object> params);
 }

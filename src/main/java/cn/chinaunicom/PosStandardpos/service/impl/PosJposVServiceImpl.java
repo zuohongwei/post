@@ -1,9 +1,11 @@
 package cn.chinaunicom.PosStandardpos.service.impl;
 
 import cn.chinaunicom.PosStandardpos.dao.PosJposVMapper;
+import cn.chinaunicom.PosStandardpos.dao.PosTreeVMapper;
 import cn.chinaunicom.PosStandardpos.entity.PosJposV;
 import cn.chinaunicom.PosStandardpos.service.PosJposVService;
 import cn.chinaunicom.platform.service.impl.HrServiceImpl;
+import cn.chinaunicom.PosStandardpos.entity.posiVo;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class PosJposVServiceImpl extends HrServiceImpl<PosJposVMapper, PosJposV>
 
 	@Resource
 	PosJposVMapper mapper;
+	@Resource
+	PosTreeVMapper treeMapper;
+
 
 	@Override
 	public List<PosJposV> getPosJposVList() {
@@ -87,6 +92,11 @@ public class PosJposVServiceImpl extends HrServiceImpl<PosJposVMapper, PosJposV>
         return posList1;
 
 
+	}
+
+	@Override
+	public List<posiVo> selectElebyPosId(String posId) {
+		return treeMapper.selectElebyPosId(posId);
 	}
 
 }

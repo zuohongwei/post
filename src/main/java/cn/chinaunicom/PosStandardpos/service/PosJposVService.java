@@ -2,6 +2,7 @@ package cn.chinaunicom.PosStandardpos.service;
 
 import cn.chinaunicom.PosStandardpos.entity.PosJposV;
 import cn.chinaunicom.platform.service.IHrService;
+import cn.chinaunicom.PosStandardpos.entity.posiVo;
 import com.baomidou.mybatisplus.plugins.Page;
 
 import java.util.HashMap;
@@ -35,4 +36,6 @@ public interface PosJposVService extends IHrService<PosJposV> {
 	Integer searchGroupPostListCount(HashMap<Object, Object> params);
 
 	List<PosJposV> getPostListForExcell(Map<String, Object> params);
+
+	List<posiVo> selectElebyPosId(String posId);
 }

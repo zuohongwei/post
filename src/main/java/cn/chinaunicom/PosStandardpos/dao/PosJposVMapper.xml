@@ -370,11 +370,9 @@
     EPJV.DEGREE_CODE  ,
     EPJV.EDUCATION_DEGREE  ,
     EPJV.KSTR  ,
-
     case when ifnull(C.SNUM, 0)=0 then '否' else '是' end,
-
-    date_format(EPJV.ACTIVE_START_DATE,'%Y-%m-%d %H:%i:%s') as ACTIVE_START_DATE,
-    date_format(EPJV.ACTIVE_END_DATE,'%Y-%m-%d %H:%i:%s')as ACTIVE_END_DATE
+    EPJV.ACTIVE_START_DATE,
+    EPJV.ACTIVE_END_DATE
 
     FROM EHRCUC_POS_JPOS_V EPJV left join
     (SELECT EPS.PARENT_POS_ID, COUNT(1) SNUM

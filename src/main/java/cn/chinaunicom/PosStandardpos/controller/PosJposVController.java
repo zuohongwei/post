@@ -12,6 +12,7 @@ import cn.chinaunicom.duty.entity.PosElement;
 import cn.chinaunicom.duty.service.PosElementService;
 import cn.chinaunicom.platform.utils.MessageResponse;
 
+import cn.chinaunicom.PosStandardpos.entity.posiVo;
 import com.baomidou.mybatisplus.plugins.Page;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ import java.util.Map;
  * @version V1.0
  * **************************************
  */
-@Api(value = "PosJposVController", tags = "VIEW")
+@Api(value = "PosJposVController", tags = "省、集团基准岗位相关")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/posJposV")
@@ -510,6 +511,38 @@ public class PosJposVController {
 		String sheetName= "集团基准岗位表";
 		FileUtil.exportExcel(postList,sheetName,sheetName, PosJposV.class,fileName,resp);
 	}
+	@ApiOperation(value = "查看岗位职责", notes = "查看岗位职责", response = PosJposV.class, httpMethod = "GET",produces="application/octet-stream")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "x-token-code", value = "用户登录令牌", paramType = "header", dataType = "String", required = true, defaultValue = "xjMjL0m2A6d1mOIsb9uFk+wuBIcKxrg4")
+	})
+	@ApiResponses({
+			@ApiResponse(
+					code = 200,
+					message = "获取数据成功",
+					response = Page.class
+			),
+			@ApiResponse(
+					code = 404,
+					message = "未查询到数据"
+			)
+	})
+	/**
+	 * 查看集团基准岗位职责
+	 * @return
+	 */
+	@GetMapping("/getPosElementById")
+	public List<posiVo> getPosElementById(
+			@RequestParam(
+					value = "posId"
+					) String posId
+	)  {
 
+		List<posiVo> eleList = null;
+		if(posId!=null && !"".equals(posId)){
+			eleList = service.selectElebyPosId(posId);
+		}
+
+		return eleList;
+	}
 }
 

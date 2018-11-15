@@ -1,6 +1,7 @@
 package cn.chinaunicom.PosStandardpos.dao;
 
 import cn.chinaunicom.PosStandardpos.entity.PosTreeV;
+import cn.chinaunicom.PosStandardpos.entity.posiVo;
 import cn.chinaunicom.platform.dao.HrBaseMapper;
 
 import java.util.HashMap;
@@ -17,4 +18,6 @@ import java.util.List;
 public interface PosTreeVMapper extends HrBaseMapper<PosTreeV> {
 
     List<PosTreeV> getSubcateList(HashMap<Object, Object> params);
+
+    List<posiVo> selectElebyPosId(String posId);
 }

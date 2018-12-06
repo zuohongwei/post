@@ -1,3 +1,4 @@
+
 package cn.chinaunicom.resplist.service.impl;
 
 import java.util.ArrayList;
@@ -94,3 +95,4 @@ public class EhrcucPosElementStructureServiceImpl extends HrServiceImpl<EhrcucPo
 	}
 
 }
+

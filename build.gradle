@@ -54,7 +54,7 @@ dependencies {
 	}
 	compile('org.springframework.boot:spring-boot-starter-undertow')
 	compile('org.springframework.boot:spring-boot-starter-data-redis')
-	compile('org.flywaydb:flyway-core')
+	//compile('org.flywaydb:flyway-core')
 	compile("com.baomidou:mybatis-plus:${mybatisPlusVersion}")
 	compile("com.baomidou:mybatisplus-spring-boot-starter:${springMybatisPlusVersion}")
 	compile("org.apache.velocity:velocity-engine-core:${velocityVersion}")

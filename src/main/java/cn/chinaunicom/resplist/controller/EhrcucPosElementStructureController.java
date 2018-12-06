@@ -1,36 +1,24 @@
 package cn.chinaunicom.resplist.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.baomidou.mybatisplus.plugins.Page;
-
 import cn.chinaunicom.common.FileUtil;
 import cn.chinaunicom.platform.utils.MessageResponse;
 import cn.chinaunicom.resplist.entity.EhrcucPosElementStructure;
 import cn.chinaunicom.resplist.entity.RespsInfo;
 import cn.chinaunicom.resplist.service.EhrcucPosElementStructureService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ************************************** 描述: 关键职责职级列表
@@ -50,8 +38,8 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/api/PosElementStructure")
 public class EhrcucPosElementStructureController {
 
-	@Autowired
-	EhrcucPosElementStructureService service;
+	@Resource
+    EhrcucPosElementStructureService service;
 
 	@ApiOperation(
 			value = "列表",
@@ -136,19 +124,8 @@ public class EhrcucPosElementStructureController {
 			httpMethod = "POST")
 	@PostMapping("/queryRespsInfo")
 	@ResponseBody
-	public Map<String, Object> queryRespsInfo(@RequestParam(
-			value = "sequence",
-			required = false) String sequence,
-			@RequestParam(
-					value = "respName",
-					required = false) String respName,
-			@RequestParam(
-					value = "status",
-					required = false) String status,
-			@RequestParam(
-					value = "levelType",
-					required = false) String[] levelTypes,
-			@RequestParam("pageSize") String pageSize, @RequestParam("pageNum") String pageNum) {
+	public Map<String, Object> queryRespsInfo(@RequestParam(value="sequence",required=false) String sequence, @RequestParam(value="respName",required=false) String respName, @RequestParam(value="status",required=false) String status,
+			@RequestParam(value="levelType",required=false) String[] levelTypes, @RequestParam("pageSize") String pageSize, @RequestParam("pageNum") String pageNum) {
 		String levelType = "";
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		if (levelTypes != null && levelTypes.length > 0)

@@ -90,6 +90,7 @@ public class ServerConfigInterceptor implements HandlerInterceptor{
 	
 	public void initWithoutAuthorityUrls(){
 		withoutAuthorityUrls.put("/api/menuItemReg/menuList", "/api/menuItemReg/menuList");
+		withoutAuthorityUrls.put("/api/menuItemReg/save", "/api/menuItemReg/save");
 	}
 
 }

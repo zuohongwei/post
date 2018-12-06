@@ -67,4 +67,8 @@ public class PosElementServiceImpl extends HrServiceImpl<PosElementMapper, PosEl
 	}
 
 
+	@Override
+	public List<PosElement> getCateList() {
+		return mapper.getCateList();
+	}
 }

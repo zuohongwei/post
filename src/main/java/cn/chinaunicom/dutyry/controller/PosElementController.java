@@ -233,9 +233,6 @@ public class PosElementController {
 	*@param status
 	*@param cRespName
 	*@param levelType
-	*@param currentPageNum
-	*@param recordNum
-	*@param isExport
 	*@return Map<String,Object>
 	 */
 	private Map<String,Object>  getQueryMap(String sequence,String sequenceName,String respName,String status,String cRespName,String[] levelType) {

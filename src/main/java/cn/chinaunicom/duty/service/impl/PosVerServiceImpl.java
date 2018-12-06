@@ -1,5 +1,7 @@
 package cn.chinaunicom.duty.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,11 @@ public class PosVerServiceImpl extends HrServiceImpl<PosVerMapper, PosVer> imple
 	@Override
 	public PosVer getVersion() {
 		return mapper.getVersion();
+	}
+
+	@Override
+	public List<PosVer> getVersionList() {
+		return mapper.getVersionList();
 	}
 
 }

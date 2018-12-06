@@ -28,6 +28,7 @@
         <result column="ATTRIBUTE12" property="attribute12" />
     </resultMap>
 
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         ELEMENT_ID, ELEMENT_CODE, ELEMENT_NAME, ELEMENT_TYPE, DATE_FROM, DATE_TO, CREATED_BY, CREATION_DATE, LAST_UPDATED_BY, LAST_UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, ATTRIBUTE11, ATTRIBUTE12
@@ -37,48 +38,39 @@
 	     SELECT EPE.ELEMENT_ID as posCateId,
 		       EPE.ELEMENT_NAME   as posCateName,
 		       EPE.ELEMENT_TYPE   as type,
-		       0                  as parentId,
+				EPES.ELEMENT_ID_PARENT as parentId,
 		       EPE.ELEMENT_CODE   AS code,
+		(SELECT E.ELEMENT_NAME
+		FROM EHRCUC_POS_ELEMENT E
+		WHERE E.ELEMENT_ID = EPES.ELEMENT_ID_PARENT) AS parentName,
 		       (SELECT COUNT(1)
 		          FROM EHRCUC_POS_ELEMENT_STRUCTURE S
 		         WHERE S.ELEMENT_ID_PARENT = EPE.ELEMENT_ID
 		           AND S.VERSION_ID = #{versionId}
-		           AND S.ATTRIBUTE1 IS NULL) AS posSubcateCount
+		           AND S.ATTRIBUTE1 IS NULL) AS posSubcateCount,
+		EPE.ELEMENT_CODE       AS elementCode,
+		EPE.ATTRIBUTE2         AS attribute2,
+		EPE.ATTRIBUTE3         AS attribute3,
+		EPE.ATTRIBUTE4         AS attribute4,
+		EPE.ATTRIBUTE5         AS attribute5,
+		EPE.ATTRIBUTE6         AS attribute6,
+		EPE.ATTRIBUTE7         AS attribute7,
+		EPE.ATTRIBUTE8         AS attribute8,
+		EPE.ATTRIBUTE9         AS attribute9,
+		EPE.ATTRIBUTE10        AS attribute11
 		  FROM EHRCUC_POS_ELEMENT EPE,
 		  	   EHRCUC_POS_ELEMENT_STRUCTURE EPES
 
 		 WHERE 1 = 1
-		   AND EPE.ELEMENT_TYPE = '10'
+		   AND EPE.ELEMENT_TYPE = #{elementType}
 		   AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
 		   AND EPES.VERSION_ID = #{versionId}
+		   AND EPES.ATTRIBUTE1 IS NULL
+		<if test="posCateId !=null and posCateId != ''">
+		   and EPES.ELEMENT_ID_PARENT = #{posCateId}
+		</if>
 		 ORDER BY EPE.ELEMENT_CODE
 	</select>
-	
-	<select id="getSubList"  resultMap="BaseResultMap">
-		 SELECT EPE.ELEMENT_ID         as posCateId,
-			       EPE.ELEMENT_NAME       as posCateName,
-			       EPE.ELEMENT_TYPE       as type,
-			       EPES.ELEMENT_ID_PARENT as parentId,
-			       (SELECT E.ELEMENT_NAME
-	                  FROM EHRCUC_POS_ELEMENT E
-	                 WHERE E.ELEMENT_ID = EPES.ELEMENT_ID_PARENT) AS parentName,
-			       EPE.ELEMENT_CODE       AS code,
-		       (SELECT COUNT(1)
-		          FROM EHRCUC_POS_ELEMENT_STRUCTURE S
-		         WHERE S.ELEMENT_ID_PARENT = EPE.ELEMENT_ID
-		           AND S.VERSION_ID = #{versionId}
-		           AND S.ATTRIBUTE1 IS NULL) AS majorCount
-			  FROM EHRCUC_POS_ELEMENT           EPE,
-			       EHRCUC_POS_ELEMENT_STRUCTURE EPES
-			 WHERE 1 = 1
-			   AND EPE.ELEMENT_TYPE = '20'
-			   AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
-			   AND EPES.VERSION_ID = #{versionId}
-			   AND EPES.ATTRIBUTE1 IS NULL
-			   and EPES.ELEMENT_ID_PARENT = #{posCateId}
-			   ORDER BY EPE.ELEMENT_CODE
-	</select>
-	
 	
 	<select id="getPosElementPagList" resultType="cn.chinaunicom.duty.entity.PosElementEmp" >
 		<![CDATA[
@@ -197,4 +189,147 @@
 					    order by epe.element_id ]]>
 		
 		</select>
+
+
+		<select id="getIds"  resultType="String">
+			 SELECT ELEMENT_ID
+					                       FROM EHRCUC_POS_ELEMENT
+					                      WHERE  ELEMENT_NAME LIKE  concat("%", #{elementName}, "%")
+
+		</select>
+
+
+	<update id="updateElementInfo" parameterType="java.util.List">
+		update ehrcuc_pos_element
+
+			<trim prefix="set" suffixOverrides=",">
+
+				<trim prefix="ELEMENT_CODE =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.elementCode!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.elementCode}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ELEMENT_NAME =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.elementName!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.elementName}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ELEMENT_TYPE =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.elementType!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.elementType}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="LAST_UPDATED_BY =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.lastUpdatedBy!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.lastUpdatedBy}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="LAST_UPDATE_DATE =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.lastUpdateDate!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.lastUpdateDate}
+						</if>
+					</foreach>
+				</trim>
+
+				<trim prefix="ATTRIBUTE1 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute1!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute1}(SELECT T.ATTRIBUTE11 FROM EHRCUC_POS_ELEMENT T WHERE T.ELEMENT_ID = #{cus.elementId}),
+						</if>
+						<if test="cus.attribute1!=null and elementType=='50'.toString()">
+							when ELEMENT_ID=#{cus.elementId} then (SELECT T.ATTRIBUTE11 FROM EHRCUC_POS_ELEMENT T WHERE T.ELEMENT_ID = #{cus.parentId}),
+						</if>
+					</foreach>
+				</trim>
+
+				<trim prefix="ATTRIBUTE2 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute2!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute2}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE3 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute3!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute3}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE4 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute4!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute4}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE5 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute5!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute5}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE6 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.lastUpdateDate!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute6}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE7 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute7!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute7}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE8 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute8!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute8}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE9 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute9!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute9}
+						</if>
+					</foreach>
+				</trim>
+				<trim prefix="ATTRIBUTE11 =case" suffix="end,">
+					<foreach collection="list" item="cus">
+						<if test="cus.attribute11!=null">
+							when ELEMENT_ID=#{cus.elementId} then #{cus.attribute11}
+						</if>
+					</foreach>
+				</trim>
+			</trim>
+			<where>
+				<foreach collection="list" separator="or" item="cus">
+					ELEMENT_ID = #{cus.elementId}
+				</foreach>
+			</where>
+	</update>
+
+	<select id="getDutyList"  resultType="java.util.Map">
+				SELECT
+		       element_id as elementId,
+		       element_name as elementName
+		  FROM ehrcuc_pos_element
+		  WHERE 1 = 1
+		  and DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') between IFNULL(date_from,date_sub(now(),INTERVAL 1 DAY )) and IFNULL(date_to,DATE_ADD( sysdate(), INTERVAL 1 DAY )) and element_type = 10 order by element_id
+
+	</select>
+
 </mapper>

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.duty.dao.PosPosdesMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.duty.entity.PosPosdes">
+        <id column="POSDES_ID" property="posdesId" />
+        <result column="POS_NAME" property="posName" />
+        <result column="ORG_ID" property="orgId" />
+        <result column="POS_CATE_ID" property="posCateId" />
+        <result column="POS_SUBCATE_ID" property="posSubcateId" />
+        <result column="MAJOR_ID" property="majorId" />
+        <result column="JOB_ID" property="jobId" />
+        <result column="POS_LEVEL_LOW" property="posLevelLow" />
+        <result column="POS_LEVEL_HIGH" property="posLevelHigh" />
+        <result column="ESTABLISHMENT" property="establishment" />
+        <result column="VERSION_ID" property="versionId" />
+        <result column="ACTIVE_START_DATE" property="activeStartDate" />
+        <result column="ACTIVE_END_DATE" property="activeEndDate" />
+        <result column="SUPERIOR_POS_NAME" property="superiorPosName" />
+        <result column="INFERIOR_POS_NAME" property="inferiorPosName" />
+        <result column="UPSTREAM_POS_NAME" property="upstreamPosName" />
+        <result column="DOWNSTREAM_POS_NAME" property="downstreamPosName" />
+        <result column="RELATION_ID" property="relationId" />
+        <result column="EDUCATION_DEGREE" property="educationDegree" />
+        <result column="PRO_KNOWLEDGE" property="proKnowledge" />
+        <result column="PRO_KNOWLEDGE_MAJOR" property="proKnowledgeMajor" />
+        <result column="PRO_KNOWLEDGE_LEVEL" property="proKnowledgeLevel" />
+        <result column="PRO_SKILL" property="proSkill" />
+        <result column="PRO_SKILL_CATE" property="proSkillCate" />
+        <result column="PRO_SKILL_LEVEL" property="proSkillLevel" />
+        <result column="AGE_LOW" property="ageLow" />
+        <result column="AGE_HIGH" property="ageHigh" />
+        <result column="JOB_LEVEL_JT" property="jobLevelJt" />
+        <result column="JOB_LEVEL_JT_YEAR" property="jobLevelJtYear" />
+        <result column="JOB_LEVEL_S" property="jobLevelS" />
+        <result column="JOB_LEVEL_S_YEAR" property="jobLevelSYear" />
+        <result column="JOB_LEVEL_DS" property="jobLevelDs" />
+        <result column="JOB_LEVEL_DS_YEAR" property="jobLevelDsYear" />
+        <result column="JOB_LEVEL_NOLIMIT" property="jobLevelNolimit" />
+        <result column="JOB_LEVEL_NOLIMIT_YEAR" property="jobLevelNolimitYear" />
+        <result column="JOB_CATE" property="jobCate" />
+        <result column="JOB_CATE_LEVEL" property="jobCateLevel" />
+        <result column="PRO_QUALIFICATION" property="proQualification" />
+        <result column="PRO_QUALIFICATION_LEVEL" property="proQualificationLevel" />
+        <result column="OTHER_DEMAND" property="otherDemand" />
+        <result column="KPI" property="kpi" />
+        <result column="POST" property="post" />
+        <result column="POST_LEVEL" property="postLevel" />
+        <result column="CREATED_BY" property="createdBy" />
+        <result column="CREATION_DATE" property="creationDate" />
+        <result column="LAST_UPDATED_BY" property="lastUpdatedBy" />
+        <result column="LAST_UPDATE_DATE" property="lastUpdateDate" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="POS_ID" property="posId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        POSDES_ID, POS_NAME, ORG_ID, POS_CATE_ID, POS_SUBCATE_ID, MAJOR_ID, JOB_ID, POS_LEVEL_LOW, POS_LEVEL_HIGH, ESTABLISHMENT, VERSION_ID, ACTIVE_START_DATE, ACTIVE_END_DATE, SUPERIOR_POS_NAME, INFERIOR_POS_NAME, UPSTREAM_POS_NAME, DOWNSTREAM_POS_NAME, RELATION_ID, EDUCATION_DEGREE, PRO_KNOWLEDGE, PRO_KNOWLEDGE_MAJOR, PRO_KNOWLEDGE_LEVEL, PRO_SKILL, PRO_SKILL_CATE, PRO_SKILL_LEVEL, AGE_LOW, AGE_HIGH, JOB_LEVEL_JT, JOB_LEVEL_JT_YEAR, JOB_LEVEL_S, JOB_LEVEL_S_YEAR, JOB_LEVEL_DS, JOB_LEVEL_DS_YEAR, JOB_LEVEL_NOLIMIT, JOB_LEVEL_NOLIMIT_YEAR, JOB_CATE, JOB_CATE_LEVEL, PRO_QUALIFICATION, PRO_QUALIFICATION_LEVEL, OTHER_DEMAND, KPI, POST, POST_LEVEL, CREATED_BY, CREATION_DATE, LAST_UPDATED_BY, LAST_UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, POS_ID
+    </sql>
+
+    <select id="getList"  resultType="java.util.Map">
+        SELECT ifnull(EPP.POSDES_ID,'') as POSDES_ID,
+        ifnull (EPP.POS_NAME,'') as POS_NAME,
+        ifnull(EOA.NAME,'')as NAME ,
+        ifnull(EPE.ELEMENT_NAME,'')as ELEMENT_NAME ,
+        ifnull(EPP.POS_LEVEL_LOW,'')as POS_LEVEL_LOW,
+        ifnull(EPP.POS_LEVEL_HIGH,'')as POS_LEVEL_HIGH,
+        ifnull(EPP.ACTIVE_START_DATE,'')as ACTIVE_START_DATE,
+        ifnull(EPP.ACTIVE_END_DATE,'')as ACTIVE_END_DATE
+        FROM  EHRCUC_POS_ELEMENT EPE,
+        EHRCUC_POS_POSDES EPP,
+        HADES_RANGE_ORGANIZATION RNG
+        <if test="personOrgId == null">
+            	,EHRBASE_ORGANIZATION_ALL EOA
+            WHERE 1=1
+            AND RNG.ORGANIZATION_ID = EOA.ORGANIZATION_ID
+            AND RNG.RANGE_ID = #{rangeId}
+            AND EOA.ORGANIZATION_ID = EPP.ORG_ID
+        </if>
+        <if test="personOrgId !=null and personOrgId != ''">
+            ,(select ORGANIZATION_ID,NAME from EHRBASE_ORGANIZATION_ALL where ORGANIZATION_ID in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+            ) EOA
+            WHERE 1=1
+            AND RNG.ORGANIZATION_ID = EOA.ORGANIZATION_ID
+            AND RNG.RANGE_ID = #{rangeId}
+            AND EOA.ORGANIZATION_ID = EPP.ORG_ID
+        </if>
+        <if test="posCateId !=null and posCateId != ''">
+            AND EPP.POS_CATE_ID = #{posCateId}
+        </if>
+        <if test="posLevel !=null and posLevel != ''">
+            #{posLevel} BETWEEN EPP.POS_LEVEL_LOW AND EPP.POS_LEVEL_HIGH
+        </if>
+        <if test="keyrespId !=null and keyrespId != ''">
+            AND EXISTS (SELECT 1
+            FROM EHRCUC_POS_POSDES_KEYRESP EPPK
+            WHERE EPPK.RELATION_ID = EPP.RELATION_ID
+            AND EPPK.KEYRESP_ID = #{keyrespId})
+        </if>
+        AND EPP.POS_CATE_ID = EPE.ELEMENT_ID
+        <if test="searchDate == null">
+            AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN
+            IFNULL(EPP.ACTIVE_START_DATE,date_sub(now(),INTERVAL 1 DAY )) and IFNULL(EPP.ACTIVE_END_DATE,DATE_ADD( sysdate(), INTERVAL 1 DAY ))
+        </if>
+        <if test="posName !=null and posName != ''">
+            AND   EPP.POS_NAME LIKE concat("%", #{posName}, "%")
+        </if>
+        <if test="searchDate !=null and searchDate != ''">
+            AND   DATE_FORMAT(#{searchDate},'%Y-%m-%d' ) BETWEEN
+            IFNULL(EPP.ACTIVE_START_DATE,date_sub(now(),INTERVAL 1 DAY )) and IFNULL(EPP.ACTIVE_END_DATE,DATE_ADD( sysdate(), INTERVAL 1 DAY ))
+        </if>
+        ORDER BY
+        CONVERT(NAME USING gbk) ,CONVERT(ELEMENT_NAME USING gbk),CONVERT(POS_NAME USING gbk)
+    </select>
+
+
+
+    <select id="getCount"  resultType="Integer">
+        SELECT count(1)
+        FROM   EHRCUC_POS_ELEMENT EPE,
+        EHRCUC_POS_POSDES EPP,
+        HADES_RANGE_ORGANIZATION RNG
+        <if test="personOrgId == null">
+            ,EHRBASE_ORGANIZATION_ALL EOA
+            WHERE 1=1
+            AND RNG.ORGANIZATION_ID = EOA.ORGANIZATION_ID
+            AND RNG.RANGE_ID = #{rangeId}
+            AND EOA.ORGANIZATION_ID = EPP.ORG_ID
+        </if>
+        <if test="personOrgId !=null and personOrgId != ''">
+            ,(select ORGANIZATION_ID,NAME from EHRBASE_ORGANIZATION_ALL where ORGANIZATION_ID in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+            ) EOA
+            WHERE 1=1
+            AND RNG.ORGANIZATION_ID = EOA.ORGANIZATION_ID
+            AND RNG.RANGE_ID = #{rangeId}
+            AND EOA.ORGANIZATION_ID = EPP.ORG_ID
+        </if>
+        <if test="posCateId !=null and posCateId != ''">
+            AND EPP.POS_CATE_ID = #{posCateId}
+        </if>
+        <if test="posLevel !=null and posLevel != ''">
+            #{posLevel} BETWEEN EPP.POS_LEVEL_LOW AND EPP.POS_LEVEL_HIGH
+        </if>
+        <if test="keyrespId !=null and keyrespId != ''">
+            AND EXISTS (SELECT 1
+            FROM EHRCUC_POS_POSDES_KEYRESP EPPK
+            WHERE EPPK.RELATION_ID = EPP.RELATION_ID
+            AND EPPK.KEYRESP_ID = #{keyrespId})
+        </if>
+        AND EPP.POS_CATE_ID = EPE.ELEMENT_ID
+        <if test="searchDate == null">
+            AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN
+            IFNULL(EPP.ACTIVE_START_DATE,date_sub(now(),INTERVAL 1 DAY )) and IFNULL(EPP.ACTIVE_END_DATE,DATE_ADD( sysdate(), INTERVAL 1 DAY ))
+        </if>
+        <if test="posName !=null and posName != ''">
+            AND   EPP.POS_NAME LIKE concat("%", #{posName}, "%")
+        </if>
+        <if test="searchDate !=null and searchDate != ''">
+            AND   DATE_FORMAT(#{searchDate},'%Y-%m-%d' ) BETWEEN
+            IFNULL(EPP.ACTIVE_START_DATE,date_sub(now(),INTERVAL 1 DAY )) and IFNULL(EPP.ACTIVE_END_DATE,DATE_ADD( sysdate(), INTERVAL 1 DAY ))
+        </if>
+    </select>
+
+    <select id="selectPosKeyElement"  resultType="java.util.Map">
+         SELECT
+                    ifnull(T.keyresp_Id,'') as elementId,
+                    ifnull(T.keyresp_Name,'') as elementName,
+                ifnull(T.MNAME,'') AS ATTRIBUTE9,
+                ifnull(T.KNAME,'') AS attribute10 from
+
+								( SELECT K.KID as keyresp_Id,
+								CONCAT(C.ELEMENT_NAME,'.',S.SNAME,'.',M.MNAME,'.',K.KNAME) as keyresp_Name,
+			        	K.KNAME AS KNAME,
+			        	M.MNAME
+			          FROM (SELECT EPE.ELEMENT_ID         KID,
+			                       EPE.ELEMENT_NAME       KNAME,
+			                       EPES.ELEMENT_ID_PARENT MID
+			                  FROM EHRCUC_POS_ELEMENT           EPE,
+			                       EHRCUC_POS_ELEMENT_STRUCTURE EPES,
+			                       EHRCUC_POS_VER               EPV
+			                 WHERE 1 = 1
+			                   AND EPE.ELEMENT_TYPE = '40'
+			                   AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+			                   AND EPES.VERSION_ID = EPV.VERSION_ID
+			                   AND EPV.VERSION_CATE = 'P'
+							   AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN EPV.EFFETIVE_START_DATE AND IFNULL(EPV.EFFETIVE_END_DATE,NOW())
+                                <if test="elementName !=null and elementName != ''">
+                                                      and EPE.ELEMENT_NAME like concat("%", #{elementName}, "%")
+                                </if>
+                            ) K,
+                            (SELECT EPE.ELEMENT_ID         MID,
+                            EPE.ELEMENT_NAME       MNAME,
+                            EPES.ELEMENT_ID_PARENT SID
+                            FROM EHRCUC_POS_ELEMENT           EPE,
+                            EHRCUC_POS_ELEMENT_STRUCTURE EPES,
+                            EHRCUC_POS_VER               EPV
+                            WHERE 1 = 1
+                            AND EPE.ELEMENT_TYPE = '30'
+                            AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+                            AND EPES.VERSION_ID = EPV.VERSION_ID
+                            AND EPV.VERSION_CATE = 'P'
+                            AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN EPV.EFFETIVE_START_DATE AND IFNULL(EPV.EFFETIVE_END_DATE,NOW()))M,
+                            (SELECT EPE.ELEMENT_ID         SID,
+                            EPE.ELEMENT_NAME       SNAME,
+                            EPES.ELEMENT_ID_PARENT CID
+                            FROM EHRCUC_POS_ELEMENT           EPE,
+                            EHRCUC_POS_ELEMENT_STRUCTURE EPES,
+                            EHRCUC_POS_VER               EPV
+                            WHERE 1 = 1
+                            AND EPE.ELEMENT_TYPE = '20'
+                            AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+                            AND EPES.VERSION_ID = EPV.VERSION_ID
+                            AND EPV.VERSION_CATE = 'P'
+                            AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN EPV.EFFETIVE_START_DATE AND IFNULL(EPV.EFFETIVE_END_DATE,NOW())) S,
+                            EHRCUC_POS_ELEMENT C
+                            WHERE 1 = 1
+                            AND K.MID = M.MID
+                            AND M.SID = S.SID
+                            AND S.CID = C.ELEMENT_ID
+        order by CONVERT(CONCAT(C.ELEMENT_NAME,'.',S.SNAME,'.',M.MNAME,'.',K.KNAME) USING gbk)
+        <if test="flexValueId !=null and flexValueId != ''">
+            and C.ELEMENT_ID = #{flexValueId}
+        </if>
+        <if test="attribute10 !=null and attribute10 != ''">
+            and M.MID = #{attribute10}
+        </if>
+        ) T
+
+    </select>
+
+    <select id="selectProfessionList"  resultType="java.util.Map">
+       SELECT DISTINCT  IFNULL(MNAME,'') AS elementName,IFNULL(MID,'') AS elementId FROM ehrcuc_pos_tree_v  order by CONVERT(elementName USING gbk)
+    </select>
+
+    <select id="selectPosKeyElementCount"  resultType="Integer">
+       select count(1) FROM (SELECT EPE.ELEMENT_ID         KID,
+                       EPE.ELEMENT_NAME       KNAME,
+                       EPES.ELEMENT_ID_PARENT MID
+                  FROM EHRCUC_POS_ELEMENT           EPE,
+                       EHRCUC_POS_ELEMENT_STRUCTURE EPES,
+                       EHRCUC_POS_VER               EPV
+                 WHERE 1 = 1
+                   AND EPE.ELEMENT_TYPE = '40'
+                   AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+                   AND EPES.VERSION_ID = EPV.VERSION_ID
+                   AND EPV.VERSION_CATE = 'P'
+                   AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN EPV.EFFETIVE_START_DATE AND IFNULL(EPV.EFFETIVE_END_DATE,NOW())
+        <if test="elementName !=null and elementName != ''">
+            AND EPE.ELEMENT_NAME like concat("%", #{elementName}, "%")
+        </if>
+        ) K,
+        (SELECT EPE.ELEMENT_ID         MID,
+        EPE.ELEMENT_NAME       MNAME,
+        EPES.ELEMENT_ID_PARENT SID
+        FROM EHRCUC_POS_ELEMENT           EPE,
+        EHRCUC_POS_ELEMENT_STRUCTURE EPES,
+        EHRCUC_POS_VER               EPV
+        WHERE 1 = 1
+        AND EPE.ELEMENT_TYPE = '30'
+        AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+        AND EPES.VERSION_ID = EPV.VERSION_ID
+        AND EPV.VERSION_CATE = 'P'
+        AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN EPV.EFFETIVE_START_DATE AND IFNULL(EPV.EFFETIVE_END_DATE,NOW()))M,
+        (SELECT EPE.ELEMENT_ID         SID,
+        EPE.ELEMENT_NAME       SNAME,
+        EPES.ELEMENT_ID_PARENT CID
+        FROM EHRCUC_POS_ELEMENT           EPE,
+        EHRCUC_POS_ELEMENT_STRUCTURE EPES,
+        EHRCUC_POS_VER               EPV
+        WHERE 1 = 1
+        AND EPE.ELEMENT_TYPE = '20'
+        AND EPE.ELEMENT_ID = EPES.ELEMENT_ID_CHILD
+        AND EPES.VERSION_ID = EPV.VERSION_ID
+        AND EPV.VERSION_CATE = 'P'
+        AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN EPV.EFFETIVE_START_DATE AND IFNULL(EPV.EFFETIVE_END_DATE,NOW())) S,
+        EHRCUC_POS_ELEMENT C
+        WHERE 1 = 1
+        AND K.MID = M.MID
+        AND M.SID = S.SID
+        AND S.CID = C.ELEMENT_ID
+        <if test="flexValueId !=null and flexValueId != ''">
+            AND C.ELEMENT_ID = #{flexValueId}
+        </if>
+        <if test="attribute10 !=null and attribute10 != ''">
+            AND M.MID = #{attribute10}
+        </if>
+
+    </select>
+
+
+
+</mapper>

@@ -375,6 +375,173 @@ public class PosPosdes extends Model<PosPosdes> {
     @TableField(exist = false)
     private String elementId;
 
+   // ---------------------------------------------------------------------------------------------------------------------
+
+    @TableField(exist = false)
+    private String orgName;
+    @TableField(exist = false)
+    private String flexValue;
+    @TableField(exist = false)
+    private String jobName;
+    @TableField(exist = false)
+    private String jobCateName;
+    @TableField(exist = false)
+    private String jobCateLevelName;
+    @TableField(exist = false)
+    private String postName;
+    @TableField(exist = false)
+    private String postLevelName;
+    @TableField(exist = false)
+    private String proQualificationName;
+    @TableField(exist = false)
+    private String proQualificationLevelName;
+    @TableField(exist = false)
+    private String effetiveStartDate;
+    @TableField(exist = false)
+    private String effetiveEndDate;
+
+
+
+    @TableField(exist = false)
+    private String keyRespId;
+    @TableField(exist = false)
+    private String mname;
+    @TableField(exist = false)
+    private String mid;
+    @TableField(exist = false)
+    private String keyRespName;
+    @TableField(exist = false)
+    private String orderNum;
+
+
+    public String getKeyRespId() {
+        return keyRespId;
+    }
+
+    public void setKeyRespId(String keyRespId) {
+        this.keyRespId = keyRespId;
+    }
+
+    public String getMname() {
+        return mname;
+    }
+
+    public void setMname(String mname) {
+        this.mname = mname;
+    }
+
+    public String getMid() {
+        return mid;
+    }
+
+    public void setMid(String mid) {
+        this.mid = mid;
+    }
+
+    public String getKeyRespName() {
+        return keyRespName;
+    }
+
+    public void setKeyRespName(String keyRespName) {
+        this.keyRespName = keyRespName;
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public String getFlexValue() {
+        return flexValue;
+    }
+
+    public void setFlexValue(String flexValue) {
+        this.flexValue = flexValue;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getJobCateName() {
+        return jobCateName;
+    }
+
+    public void setJobCateName(String jobCateName) {
+        this.jobCateName = jobCateName;
+    }
+
+    public String getJobCateLevelName() {
+        return jobCateLevelName;
+    }
+
+    public void setJobCateLevelName(String jobCateLevelName) {
+        this.jobCateLevelName = jobCateLevelName;
+    }
+
+    public String getPostName() {
+        return postName;
+    }
+
+    public void setPostName(String postName) {
+        this.postName = postName;
+    }
+
+    public String getPostLevelName() {
+        return postLevelName;
+    }
+
+    public void setPostLevelName(String postLevelName) {
+        this.postLevelName = postLevelName;
+    }
+
+    public String getProQualificationName() {
+        return proQualificationName;
+    }
+
+    public void setProQualificationName(String proQualificationName) {
+        this.proQualificationName = proQualificationName;
+    }
+
+    public String getProQualificationLevelName() {
+        return proQualificationLevelName;
+    }
+
+    public void setProQualificationLevelName(String proQualificationLevelName) {
+        this.proQualificationLevelName = proQualificationLevelName;
+    }
+
+    public String getEffetiveStartDate() {
+        return effetiveStartDate;
+    }
+
+    public void setEffetiveStartDate(String effetiveStartDate) {
+        this.effetiveStartDate = effetiveStartDate;
+    }
+
+    public String getEffetiveEndDate() {
+        return effetiveEndDate;
+    }
+
+    public void setEffetiveEndDate(String effetiveEndDate) {
+        this.effetiveEndDate = effetiveEndDate;
+    }
+
     public String getName() {
         return name;
     }

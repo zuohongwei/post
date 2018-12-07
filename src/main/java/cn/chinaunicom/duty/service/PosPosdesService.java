@@ -25,5 +25,9 @@ public interface PosPosdesService extends IHrService<PosPosdes> {
     List<Map<String,Object>> selectProfessionList();
     Integer  selectPosKeyElementCount(Map<String,Object>map);
 
+    Map<String,Object>selectInstructions(Map<String,Object>map);
+
+    List<Map<String,Object>> searchKeyMap(Map<String,Object>map);
+
 	
 }

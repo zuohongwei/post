@@ -5,6 +5,7 @@ import cn.chinaunicom.common.FastJsonUtils;
 import cn.chinaunicom.duty.entity.OrganizationAll;
 import cn.chinaunicom.duty.entity.PosElement;
 import cn.chinaunicom.duty.entity.PosPosdes;
+import cn.chinaunicom.duty.entity.TemData;
 import cn.chinaunicom.duty.service.AuthCtrlValueService;
 import cn.chinaunicom.duty.service.OrganizationAllService;
 import cn.chinaunicom.duty.service.PosElementService;
@@ -200,7 +201,36 @@ public class PosPosdesController {
 
 
 
+    @ApiOperation(value = "岗位说明书", notes = "岗位说明书", response = PosPosdes.class, httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "x-token-code", value = "用户登录令牌", paramType = "header", dataType = "String", required = true, defaultValue = "xjMjL0m2A6d1mOIsb9uFk+wuBIcKxrg4")
+    })
+    @ApiResponses({
+            @ApiResponse(
+                    code = 200,
+                    message = "获取数据成功",
+                    response = Page.class
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "未查询到数据"
+            )
+    })
+    @GetMapping("/instruction")
+    public ResponseEntity<Object> getInstructions(@RequestParam(value = "posdesId", required = false) String posdesId){
+	    Map<String,Object> result = new HashMap<>();
+        Map<String,Object>map = new HashMap<>();
+        if(StringUtils.isNotBlank(posdesId)){
+            map.put("posdesId",posdesId);
+        }
 
+        Map<String, Object> instructions = posPosdesService.selectInstructions(map);
+        result.put("instructions",instructions);
+        List<Map<String, Object>> searchKeyMap = posPosdesService.searchKeyMap(map);
+        result.put("keyRespList",searchKeyMap);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 
     private Map<String,Object> getQueryMap (String personOrgId,String personOrgName,String posCateId,String posLevel,String keyrespId,String keyrespName,String searchDate,String posName,String rangeId){

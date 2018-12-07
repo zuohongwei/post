@@ -306,4 +306,144 @@
 
 
 
+    <select id="selectInstructions"  resultType="java.util.Map">
+         SELECT
+        ifnull(POSDES_ID,'') as POSDES_ID,
+        ifnull(POS_NAME,'') as POS_NAME,
+        ifnull(ORG_ID,'') as ORG_ID,
+        ifnull((SELECT NAME FROM EHRBASE_ORGANIZATION_ALL ORG WHERE ORGANIZATION_ID = ORG_ID ),'') as orgName,
+        ifnull((SELECT EPE.ELEMENT_NAME FROM EHRCUC_POS_ELEMENT EPE WHERE EPE.ELEMENT_ID = POS_CATE_ID ),'') as flexValue,
+        ifnull(POS_SUBCATE_ID,'') as POS_SUBCATE_ID,
+        ifnull(MAJOR_ID,'') as MAJOR_ID,
+        ifnull(JOB_ID,'') as JOB_ID,
+        ifnull((SELECT FFV.FLEX_VALUE
+        FROM FND_FLEX_VALUE_SETS FFVS, FND_FLEX_VALUES FFV
+        WHERE 1 = 1
+        AND FFV.FLEX_VALUE_SET_ID = FFVS.FLEX_VALUE_SET_ID
+        AND FFVS.FLEX_VALUE_SET_NAME = 'CNC_JOB_JOBTITLE'
+        AND FFV.ENABLED_FLAG = 'Y'
+        AND FFV.FLEX_VALUE_ID = JOB_ID
+        AND DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN ifnull(FFV.START_DATE_ACTIVE, date_sub(now(),INTERVAL 1 DAY )) AND
+        ifnull(FFV.END_DATE_ACTIVE, DATE_ADD( sysdate(), INTERVAL 1 DAY ))),'') as jobName,
+        ifnull(POS_LEVEL_LOW,'') as POS_LEVEL_LOW,
+        ifnull(POS_LEVEL_HIGH,'') as POS_LEVEL_HIGH,
+        ifnull(VERSION_ID,'') as VERSION_ID,
+        ifnull(ESTABLISHMENT,'') as ESTABLISHMENT,
+        ifnull(SUPERIOR_POS_NAME,'') as SUPERIOR_POS_NAME,
+        ifnull(INFERIOR_POS_NAME,'') as INFERIOR_POS_NAME,
+        ifnull(UPSTREAM_POS_NAME,'') as VERSION_ID,
+        ifnull(DOWNSTREAM_POS_NAME,'') as DOWNSTREAM_POS_NAME,
+        ifnull(RELATION_ID,'') as RELATION_ID,
+        ifnull(EDUCATION_DEGREE,'') as EDUCATION_DEGREE,
+        ifnull(PRO_KNOWLEDGE,'') as PRO_KNOWLEDGE,
+        ifnull(PRO_KNOWLEDGE_MAJOR,'') as PRO_KNOWLEDGE_MAJOR,
+        ifnull(PRO_KNOWLEDGE_LEVEL,'') as PRO_KNOWLEDGE_LEVEL,
+        ifnull(PRO_SKILL,'') as PRO_SKILL,
+        ifnull(PRO_SKILL_CATE,'') as PRO_SKILL_CATE,
+        ifnull(PRO_SKILL_LEVEL,'') as PRO_SKILL_LEVEL,
+        ifnull(AGE_LOW,'') as AGE_LOW,
+        ifnull(AGE_HIGH,'') as AGE_HIGH,
+        ifnull(JOB_LEVEL_JT,'') as JOB_LEVEL_JT,
+        ifnull(JOB_LEVEL_JT_YEAR,'') as JOB_LEVEL_JT_YEAR,
+        ifnull(JOB_LEVEL_S,'') as JOB_LEVEL_S,
+        ifnull(JOB_LEVEL_S_YEAR,'') as JOB_LEVEL_S_YEAR,
+        ifnull(JOB_LEVEL_DS,'') as JOB_LEVEL_DS,
+        ifnull(JOB_LEVEL_DS_YEAR,'') as JOB_LEVEL_DS_YEAR,
+        ifnull(JOB_LEVEL_NOLIMIT,'') as PRO_KNOWLEDGE,
+        ifnull(JOB_LEVEL_NOLIMIT_YEAR,'') as JOB_LEVEL_NOLIMIT_YEAR,
+        ifnull(JOB_CATE,'') as JOB_CATE,
+        ifnull((SELECT MEANING FROM HR_LOOKUPS WHERE LOOKUP_TYPE = 'CNC_WORK_TYPE' AND ENABLED_FLAG = 'Y'AND LOOKUP_CODE = JOB_CATE),'') as jobCateName,
+        ifnull(JOB_CATE_LEVEL,'') as JOB_CATE_LEVEL,
+        ifnull((SELECT MEANING FROM HR_LOOKUPS WHERE LOOKUP_TYPE = 'CNC_SKILL_LEVEL' AND ENABLED_FLAG = 'Y' AND LOOKUP_CODE = JOB_CATE_LEVEL),'') as jobCateLevelName,
+        ifnull(POST,'') as POST,
+        ifnull(POST_LEVEL,'') as POST_LEVEL,
+        ifnull((SELECT XL.MEANING || '.' || MC.MEANING
+        FROM HR_LOOKUPS XL, HR_LOOKUPS MC, HR_LOOKUPS DJ
+        WHERE 1 = 1
+        AND XL.LOOKUP_TYPE = 'CNC_ZYJSZGXL_1109'
+        AND XL.ENABLED_FLAG = 'Y'
+        AND MC.LOOKUP_TYPE = 'CNC_ZYJSZGMC_1109'
+        AND MC.ENABLED_FLAG = 'Y'
+        AND DJ.LOOKUP_TYPE = 'CNC_TECH_LEVEL'
+        AND DJ.ENABLED_FLAG = 'Y'
+        AND SUBSTR(MC.LOOKUP_CODE, 1, 3) = XL.LOOKUP_CODE
+        AND (case 	when	DJ.LOOKUP_CODE='AD' then 10
+        when 	 DJ.LOOKUP_CODE='AD' then 10
+        when 	 DJ.LOOKUP_CODE='SR' then 20
+        when 	 DJ.LOOKUP_CODE='MD' then 30
+        when 	 DJ.LOOKUP_CODE='JR' then 40
+        when 	 DJ.LOOKUP_CODE='GN' then 50
+        end	) = SUBSTR(MC.LOOKUP_CODE, 4, 2)
+        AND MC.LOOKUP_CODE = POST),'') as postName,
+        ifnull((SELECT DJ.MEANING
+        FROM HR_LOOKUPS XL, HR_LOOKUPS MC, HR_LOOKUPS DJ
+        WHERE 1 = 1
+        AND XL.LOOKUP_TYPE = 'CNC_ZYJSZGXL_1109'
+        AND XL.ENABLED_FLAG = 'Y'
+        AND MC.LOOKUP_TYPE = 'CNC_ZYJSZGMC_1109'
+        AND MC.ENABLED_FLAG = 'Y'
+        AND DJ.LOOKUP_TYPE = 'CNC_TECH_LEVEL'
+        AND DJ.ENABLED_FLAG = 'Y'
+        AND SUBSTR(MC.LOOKUP_CODE, 1, 3) = XL.LOOKUP_CODE
+        AND (case 	when	DJ.LOOKUP_CODE='AD' then 10
+        when 	 DJ.LOOKUP_CODE='AD' then 10
+        when 	 DJ.LOOKUP_CODE='SR' then 20
+        when 	 DJ.LOOKUP_CODE='MD' then 30
+        when 	 DJ.LOOKUP_CODE='JR' then 40
+        when 	 DJ.LOOKUP_CODE='GN' then 50
+        end	) = SUBSTR(MC.LOOKUP_CODE, 4, 2)
+        AND MC.LOOKUP_CODE = POST),'') as postLevelName,
+        ifnull(OTHER_DEMAND,'') as OTHER_DEMAND,
+        ifnull(KPI,'') as KPI,
+        ifnull(CREATED_BY,'') as CREATED_BY,
+        ifnull(CREATION_DATE,'') as CREATION_DATE,
+        ifnull(LAST_UPDATED_BY,'') as LAST_UPDATED_BY,
+        ifnull(LAST_UPDATE_DATE,'') as LAST_UPDATE_DATE,
+        ifnull(PRO_QUALIFICATION,'') as PRO_QUALIFICATION,
+        ifnull(PRO_QUALIFICATION_LEVEL,'') as PRO_QUALIFICATION_LEVEL,
+        ifnull((SELECT element_name  FROM ehrcuc_pos_element WHERE element_type = 30 and element_id = PRO_QUALIFICATION),'') as proQualificationName,
+        ifnull((SELECT MEANING FROM HADES_LOOKUPS WHERE LOOKUP_TYPE = 'EHRCUC_MAJOR_LEVEL' AND LOOKUP_CODE = PRO_QUALIFICATION_LEVEL),'') as proQualificationLevelName,
+        ifnull(ATTRIBUTE1,'') as ATTRIBUTE1,
+        ifnull(ATTRIBUTE2,'') as ATTRIBUTE2,
+        ifnull(ATTRIBUTE3,'') as ATTRIBUTE3,
+        ifnull(ATTRIBUTE4,'') as ATTRIBUTE4,
+        ifnull(ATTRIBUTE5,'') as ATTRIBUTE5,
+        ifnull(ATTRIBUTE6,'') as ATTRIBUTE6,
+        ifnull(ATTRIBUTE7,'') as ATTRIBUTE7,
+        ifnull(ATTRIBUTE8,'') as ATTRIBUTE8,
+        ifnull(ATTRIBUTE9,'') as ATTRIBUTE9,
+        ifnull(ATTRIBUTE10,'') as ATTRIBUTE10,
+        ifnull( DATE_FORMAT(ACTIVE_START_DATE, '%Y-%m-%d'),'') as effetiveStartDate,
+        ifnull(DATE_FORMAT(ACTIVE_END_DATE, '%Y-%m-%d'),'') as effetiveEndDate
+        FROM
+            EHRCUC_POS_POSDES
+       WHERE 1 = 1
+        <if test="posdesId !=null and posdesId != ''">
+            AND POSDES_ID=#{posdesId}
+        </if>
+
+    </select>
+
+    <select id="searchKeyMap"  resultType="java.util.Map">
+       SELECT DISTINCT
+        ifnull(EPE.ELEMENT_ID,'') as keyRespId,
+        ifnull(EPV.MNAME,'') as mname,
+        ifnull(EPV.MID,'') as mid,
+        ifnull(EPE.ELEMENT_NAME,'') as keyRespName,
+        ifnull(EPPK.ORDER_NUM,'') as orderNum
+		  FROM EHRCUC_POS_ELEMENT        EPE,
+		       EHRCUC_POS_POSDES_KEYRESP EPPK,
+		       EHRCUC_POS_POSDES         EPP,
+		       EHRCUC_POS_TREE_V        EPV
+		 WHERE 1 = 1
+		   AND EPP.RELATION_ID = EPPK.RELATION_ID
+		   AND EPPK.KEYRESP_ID = EPE.ELEMENT_ID
+		   AND EPV.KID = EPPK.KEYRESP_ID
+        <if test="posdesId !=null and posdesId != ''">
+            AND POSDES_ID=#{posdesId}
+        </if>
+    </select>
+
+
+
 </mapper>

@@ -214,5 +214,11 @@ WHERE
 
 			]]>
 		</select>
+	<select id="findPosCateByName"  resultType="java.lang.Long">
+		SELECT E.ELEMENT_ID FROM EHRCUC_POS_ELEMENT E
+	       WHERE E.ELEMENT_TYPE = #{type}
+	       AND E.ELEMENT_NAME = #{name}
+	       AND  now() BETWEEN E.DATE_FROM AND ifnull ( E.Date_To, DATE_ADD( now( ), INTERVAL 1 DAY ) )
+	</select>
 </mapper>
 

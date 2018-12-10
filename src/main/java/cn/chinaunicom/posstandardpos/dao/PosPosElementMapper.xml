@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.posstandardpos.dao.PosPosElementMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.posstandardpos.entity.PosPosElement">
+        <result column="POS_ID" property="posId" />
+        <result column="SKID" property="skid" />
+        <result column="CREATED_BY" property="createdBy" />
+        <result column="CREATION_DATE" property="creationDate" />
+        <result column="LAST_UPDATED_BY" property="lastUpdatedBy" />
+        <result column="LAST_UPDATE_DATE" property="lastUpdateDate" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="kid" property="kid" />
+        <result column="kstr" property="kstr" />
+        <result column="inFlag" property="inFlag" />
+
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        POS_ID, SKID, CREATED_BY, CREATION_DATE, LAST_UPDATED_BY, LAST_UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10
+    </sql>
+    <select id="getElementById" resultMap="BaseResultMap">
+			<![CDATA[
+				SELECT EPPE.SKID
+			      FROM EHRCUC_POS_POS_ELEMENT EPPE
+			     selectElebyPosIdWHERE 1 = 1
+			       AND EPPE.POS_ID = #{parentPosId}
+			]]>
+		</select>
+    <select id="selectElebyPosId" resultMap="BaseResultMap" >
+			<![CDATA[
+				SELECT SP.POS_ID ,
+				       SP.KID AS kid,
+				       SP.SKID ,
+				       SP.SK_STR AS kstr,
+				       (case when ifnull(JP.STR,'M')='M' then 'N' else 'Y' end) AS inFlag
+				  FROM
+				      (SELECT EPS.POS_ID,concat(EPS.PARENT_POS_ID , '-' , EPPE.SKID) as STR,
+				       EPTV.KID KID,
+				       EPTV.SKID SKID,
+				     concat( EPTV.MNAME , '.' , EPTV.KNAME , '.' , EPTV.SKNAME )as SK_STR
+				       FROM EHRCUC_POS_POS_ELEMENT EPPE,
+				       EHRCUC_POS_STANDARDPOS EPS,
+				       EHRCUC_POS_TREE_V EPTV
+				       WHERE 1 = 1
+				       AND EPS.POS_ID = #{posId}
+				       AND EPS.POS_ID = EPPE.POS_ID
+				       AND EPPE.SKID = EPTV.SKID) SP
+				       left  join
+				      (SELECT concat(EPS.POS_ID , '-' , EPPE.SKID)as STR
+				       FROM EHRCUC_POS_POS_ELEMENT EPPE,
+				       EHRCUC_POS_STANDARDPOS EPS
+				       WHERE 1 = 1
+				       AND EPS.POS_TYPE = 'J'
+				       AND EPS.POS_ID = EPPE.POS_ID) JP
+				       on SP.STR = JP.STR
+				 WHERE 1 = 1
+
+				   ORDER BY SP.SK_STR
+			]]>
+		</select>
+    <delete id="deletePosElement"  >
+		  	<![CDATA[
+		  		delete from
+		  		ehrcuc_pos_pos_element
+		  		where pos_id = #{posId}
+		  	]]>
+		</delete>
+    <insert id="createPosDutyInfo" parameterType="java.util.Map" >
+				<![CDATA[
+					insert into EHRCUC_POS_POS_ELEMENT(
+                          POS_ID,
+					      SKID,
+					      CREATED_BY,
+					      CREATION_DATE,
+					      LAST_UPDATED_BY,
+					      LAST_UPDATE_DATE
+					)values(
+                           #{stObMap.posId},
+					      #{stObMap.skid},
+					      #{stObMap.operatorId},
+					      now(),
+					      #{stObMap.operatorId},
+					      now()
+					)
+				 ]]>
+		</insert>
+    <insert id="createPosDutyInfoNew" parameterType="java.util.List" >
+					insert into EHRCUC_POS_POS_ELEMENT(
+                          POS_ID,
+					      SKID,
+					      CREATED_BY,
+					      LAST_UPDATED_BY,
+					       CREATION_DATE,
+					      LAST_UPDATE_DATE
+					)values
+                             <foreach collection="idsMap" item="item" index="index"  separator=",">
+                                 (
+                                 #{item.posId},
+                                 #{item.skid},
+                                 #{item.operatorId},
+                                 #{item.operatorId},
+                                 now(),
+                                 now()
+                                 )
+                        </foreach>
+		</insert>
+    <delete id="deletePosDutyInfo"  >
+			  	<![CDATA[
+			  		delete from
+			  		EHRCUC_POS_POS_ELEMENT
+			  		where pos_id = #{posId}
+			  	]]>
+			</delete>
+    <update id="updatePosRate">
+				<![CDATA[
+					update EHRCUC_POS_STANDARDPOS
+					set ATTRIBUTE1 = #{rate}
+					where POS_ID = #{posId}
+				]]>
+		</update>
+</mapper>

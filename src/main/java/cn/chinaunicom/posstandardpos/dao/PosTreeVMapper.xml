@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.posstandardpos.dao.PosTreeVMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.posstandardpos.entity.PosTreeV">
+        <result column="POS_ID" property="posId" />
+        <result column="SKID" property="skid" />
+        <result column="SKNAME" property="skname" />
+        <result column="KID" property="kid" />
+        <result column="KNAME" property="kname" />
+        <result column="KCODE" property="kcode" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="MID" property="mid" />
+        <result column="MNAME" property="mname" />
+        <result column="SID" property="sid" />
+        <result column="SNAME" property="sname" />
+        <result column="CID" property="cid" />
+        <result column="CNAME" property="cname" />
+        <result column="ULEVEL" property="ulevel" />
+        <result column="SKSTR" property="skstr" />
+        <result column="inFlag" property="inFlag" />
+        <result column="kstr" property="kstr" />
+        <result column="subRespStr" property="subRespStr" />
+        <result column="isExistAss" property="isExistAss" />
+        <result column="isExistSk" property="isExistSk" />
+
+        <result column="kstr" property="kstr" />
+        <result column="inFlag" property="inFlag" />
+
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="cn.chinaunicom.posstandardpos.entity.posiVo">
+        <result column="posId" property="posId" />
+        <result column="kid" property="kid" />
+        <result column="skid" property="skid" />
+        <result column="kstr" property="kstr" />
+        <result column="inFlag" property="inFlag" />
+        <result column="skname" property="skname" />
+
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        SKID, SKNAME, KID, KNAME, KCODE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, MID, MNAME, SID, SNAME, CID, CNAME, ULEVEL, SKSTR
+    </sql>
+    <select id="getSubcateList" resultMap="BaseResultMap" >
+			<![CDATA[
+				SELECT DISTINCT V.SID ,
+								V.SNAME
+					FROM EHRCUC_POS_TREE_V V
+					where 1=1
+					AND V.CID = ifnull(#{posCateId},V.CID)
+			]]>
+		</select>
+
+    <!-- 岗位职责  -->
+    <select id="selectElebyPosId" resultMap="BaseResultMap2" >
+			<![CDATA[
+                 SELECT
+                SP.POS_ID AS posId,
+                SP.KID AS kid,
+                SP.SKID AS skid,
+                SP.SK_STR AS kstr,
+                ( CASE WHEN ifnull( JP.STR, 'M' ) = 'M' THEN 'N' ELSE 'Y' END ) AS inFlag
+                FROM
+                (
+                SELECT
+                EPS.POS_ID,
+                concat( EPS.PARENT_POS_ID, '-', EPPE.SKID ) AS STR,
+                EPTV.KID KID,
+                EPTV.SKID SKID,
+                concat( EPTV.MNAME, '.', EPTV.KNAME, '.', EPTV.SKNAME ) AS SK_STR
+                FROM
+                EHRCUC_POS_POS_ELEMENT EPPE,
+                EHRCUC_POS_STANDARDPOS EPS,
+                EHRCUC_POS_TREE_V EPTV
+                WHERE
+                1 = 1
+                AND EPS.POS_ID = #{posId}
+                AND EPS.POS_ID = EPPE.POS_ID
+                AND EPPE.SKID = EPTV.SKID
+                ) SP
+                LEFT JOIN (
+                SELECT
+                concat( EPS.POS_ID, '-', EPPE.SKID  ) AS STR
+                FROM
+                EHRCUC_POS_POS_ELEMENT EPPE,
+                EHRCUC_POS_STANDARDPOS EPS
+                WHERE
+                1 = 1
+                AND EPS.POS_TYPE = 'J'
+                AND EPS.POS_ID = EPPE.POS_ID
+                ) JP ON SP.STR = JP.STR
+                WHERE
+                1 = 1
+                ORDER BY
+                SP.SK_STR
+			]]>
+		</select>
+    <select id="getMListById" resultMap="BaseResultMap">
+			<![CDATA[
+				SELECT DISTINCT
+				  KV.MID,
+                concat(KV.CNAME,'.',KV.SNAME,'.',KV.MNAME)as MNAME,
+                  (SELECT COUNT(*)
+                      FROM EHRCUC_POS_POS_ELEMENT E,
+                           EHRCUC_POS_TREE_V V
+                     WHERE 1 = 1
+                       AND E.POS_ID = #{posId}
+                       AND E.SKID = V.SKID
+                       AND V.SKID = KV.SKID) AS isExistAss
+                  FROM EHRCUC_POS_TREE_V  KV
+				 UNION ALL
+				SELECT DISTINCT EPTV.MID as MID,
+					   EPTV.MNAME as MNAME,
+					   (SELECT COUNT(*)
+		                  FROM EHRCUC_POS_POS_ELEMENT E,
+		                       EHRCUC_POS_TREE_V V
+		                 WHERE 1 = 1
+		                   AND E.POS_ID = #{posId}
+		                   AND E.SKID = V.SKID
+		                   AND V.MID = EPTV.MID) AS isExistAss
+				  FROM EHRCUC_POS_TREE_V EPTV
+				 WHERE 1 = 1
+				   AND EPTV.MNAME = '组织内综合事务'
+			]]>
+		</select>
+
+    <select id="getKListByMId" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+			<![CDATA[
+				SELECT DISTINCT EPTV.KID as KID,
+			           EPTV.KNAME as MNAME,
+			           (SELECT REPLACE(group_concat(t.SKID), ',', '*') FROM EHRCUC_POS_TREE_V t WHERE t.KID = EPTV.KID) AS subRespStr,
+			           (SELECT COUNT(*)
+		                  FROM EHRCUC_POS_POS_ELEMENT E,
+		                       EHRCUC_POS_TREE_V V
+		                 WHERE 1 = 1
+		                   AND E.POS_ID = #{posId}
+		                   AND E.SKID = V.SKID
+		                   AND V.KID = EPTV.KID) AS isExistSk
+			      FROM
+			           EHRCUC_POS_TREE_V EPTV
+			       WHERE 1 = 1
+
+			         AND EPTV.MID = #{mid}
+
+			       UNION ALL
+			      SELECT DISTINCT EPTV.KID as KID,
+			             EPTV.KNAME as MNAME,
+			             (SELECT REPLACE(group_concat(t.SKID), ',', '*') FROM EHRCUC_POS_TREE_V t WHERE t.KID = EPTV.KID) AS subRespStr,
+			             (SELECT COUNT(*)
+		                  FROM EHRCUC_POS_POS_ELEMENT E,
+		                       EHRCUC_POS_TREE_V V
+		                 WHERE 1 = 1
+		                   AND E.POS_ID = #{posId}
+		                   AND E.SKID = V.SKID
+		                   AND V.KID = EPTV.KID) AS isExistSk
+			        FROM EHRCUC_POS_TREE_V EPTV
+			       WHERE 1 = 1
+			         AND EPTV.MID = #{mid}
+			         AND EPTV.MNAME = '组织内综合事务'
+			]]>
+		</select><select id="getKListsByMId" resultMap="BaseResultMap" parameterType="java.util.Map">
+			<![CDATA[
+				SELECT DISTINCT EPTV.KID as KID,
+				EPTV.MID as MID,
+			           EPTV.KNAME as MNAME,
+			           (SELECT REPLACE(group_concat(t.SKID), ',', '*') FROM EHRCUC_POS_TREE_V t WHERE t.KID = EPTV.KID) AS subRespStr,
+			           (SELECT COUNT(*)
+		                  FROM EHRCUC_POS_POS_ELEMENT E,
+		                       EHRCUC_POS_TREE_V V
+		                 WHERE 1 = 1
+		                   AND E.POS_ID = #{posId}
+		                   AND E.SKID = V.SKID
+		                   AND V.KID = EPTV.KID) AS isExistSk
+			      FROM
+			           EHRCUC_POS_TREE_V EPTV
+			       WHERE 1 = 1
+			         AND EPTV.MID in]]>
+                        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+                              #{item}
+                        </foreach>
+            <![CDATA[
+			       UNION ALL
+			      SELECT DISTINCT EPTV.KID as KID,
+			      EPTV.MID as MID,
+			             EPTV.KNAME as MNAME,
+			             (SELECT REPLACE(group_concat(t.SKID), ',', '*') FROM EHRCUC_POS_TREE_V t WHERE t.KID = EPTV.KID) AS subRespStr,
+			             (SELECT COUNT(*)
+		                  FROM EHRCUC_POS_POS_ELEMENT E,
+		                       EHRCUC_POS_TREE_V V
+		                 WHERE 1 = 1
+		                   AND E.POS_ID = #{posId}
+		                   AND E.SKID = V.SKID
+		                   AND V.KID = EPTV.KID) AS isExistSk
+			        FROM EHRCUC_POS_TREE_V EPTV
+			       WHERE 1 = 1
+			         AND EPTV.MID in ]]>
+                    <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+			          <![CDATA[
+			         AND EPTV.MNAME = '组织内综合事务'
+			]]>
+		</select>
+    <select id="getSkListsByKId" resultMap="BaseResultMap" parameterType="java.util.Map">
+			<![CDATA[
+						SELECT  E.ELEMENT_ID as SKID,
+						S.ELEMENT_ID_PARENT as KID,
+		       					E.ELEMENT_NAME as SKNAME
+						 FROM EHRCUC_POS_ELEMENT E ,
+				              EHRCUC_POS_ELEMENT_STRUCTURE S
+				       WHERE E.ELEMENT_TYPE = '50'
+				       AND S.ELEMENT_ID_CHILD = E.ELEMENT_ID
+				       AND S.ELEMENT_ID_PARENT in ]]>
+                    <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+				       <![CDATA[
+				       AND REPLACE(E.DATE_TO,'0000-00-00 00:00:00',null) is null
+				       AND S.VERSION_ID IN (
+				       SELECT V.VERSION_ID FROM
+				              EHRCUC_POS_VER V WHERE V.VERSION_CATE = 'P'
+
+				              AND now() BETWEEN ifnull(V.EFFETIVE_START_DATE,date_sub( now( ) , INTERVAL  1 DAY ))
+				              AND ifnull(V.EFFETIVE_END_DATE,date_add( now( ) , INTERVAL  1 DAY ))
+				       )
+			       UNION ALL
+			      SELECT DISTINCT EPTV.SKID as SKID,
+			      EPTV.MID as KID,
+			             EPTV.SKNAME as SKNAME
+			        FROM EHRCUC_POS_TREE_V EPTV
+			       WHERE 1 = 1
+			         AND EPTV.KID in]]>
+                    <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+            <![CDATA[
+			         AND EPTV.MNAME = '组织内综合事务'
+			]]>
+		</select>
+
+    <select id="getSkListByKId" resultMap="BaseResultMap" >
+			<![CDATA[
+						SELECT  E.ELEMENT_ID as SKID,
+		       					E.ELEMENT_NAME as SKNAME
+						 FROM EHRCUC_POS_ELEMENT E ,
+				              EHRCUC_POS_ELEMENT_STRUCTURE S
+				       WHERE E.ELEMENT_TYPE = '50'
+				       AND S.ELEMENT_ID_CHILD = E.ELEMENT_ID
+				       AND S.ELEMENT_ID_PARENT = #{kid}
+				       AND REPLACE(E.DATE_TO,'0000-00-00 00:00:00',null) is null
+				       AND S.VERSION_ID IN (
+				       SELECT V.VERSION_ID FROM
+				              EHRCUC_POS_VER V WHERE V.VERSION_CATE = 'P'
+
+				              AND now() BETWEEN ifnull(V.EFFETIVE_START_DATE,date_sub( now( ) , INTERVAL  1 DAY ))
+				              AND ifnull(V.EFFETIVE_END_DATE,date_add( now( ) , INTERVAL  1 DAY ))
+				       )
+			       UNION ALL
+			      SELECT DISTINCT EPTV.SKID as SKID,
+			             EPTV.SKNAME as SKNAME
+			        FROM EHRCUC_POS_TREE_V EPTV
+			       WHERE 1 = 1
+			         AND EPTV.KID = #{kid}
+			         AND EPTV.MNAME = '组织内综合事务'
+			]]>
+		</select>
+</mapper>

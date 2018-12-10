@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.utils.dao.TreeDataMapper">
+
+	<update id="createTable" >
+	  	CREATE TEMPORARY TABLE IF NOT EXISTS ${tableName} (ID VARCHAR(20))
+	 </update>
+
+	<update id="dropTable" >
+	  	drop table IF EXISTS ${tableName}
+	 </update>
+  
+	<!-- 插入临时表 -->
+	<insert id="insertTempData" parameterType="java.util.List">
+	    insert into ${tableName}
+	    (   
+	        ID
+	    )
+	    values
+	    <foreach collection="ids" item="id" index= "index" separator =",">
+	    (
+	        #{id}
+	    )
+	    </foreach>
+	</insert>
+	
+	<select id="getChildrenDataByTempTB" resultType="cn.chinaunicom.utils.entity.TreeData">
+		SELECT
+			${idCode} AS id,
+			${nameCode} AS title,
+			${pidCode} AS pid        
+		FROM
+			${tableName}
+		where ${idCode} in ${tempTable} and ${templete}
+	</select>
+
+	<select id="getChildrenData" resultType="cn.chinaunicom.utils.entity.TreeData">
+		SELECT
+			${idCode} AS id,
+			${nameCode} AS title,
+			${pidCode} AS pid        
+		FROM
+			${tableName}
+		where ${pidCode} in 
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+              #{id}
+        </foreach>
+       	<if test="wherePart != null and wherePart != ''">
+            AND #{ wherePart }
+        </if>
+	</select>
+	
+	<select id="getData" resultType="cn.chinaunicom.utils.entity.TreeData">
+		SELECT
+			${idCode} AS id,
+			${nameCode} AS title,
+			${pidCode} AS pid         
+		FROM
+			${tableName}
+		where 
+        	${idCode} = #{id}
+       	<if test="wherePart != null and wherePart != ''">
+            AND #{ wherePart }
+        </if>
+	</select>
+	
+	<select id="getParentByTempTB" resultType="cn.chinaunicom.utils.entity.TreeData">
+		SELECT
+			${idCode} AS id,
+			${nameCode} AS title,
+			${pidCode} AS pid        
+		FROM
+			${templete}
+	</select>
+	
+</mapper>

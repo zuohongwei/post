@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.posstandardpos.dao.PosSposVMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.posstandardpos.entity.PosSposV">
+        <result column="POS_ID" property="posId" />
+        <result column="ORG_ID" property="orgId" />
+        <result column="POS_CATE_ID" property="posCateId" />
+        <result column="CNAME" property="cname" />
+        <result column="POS_SUBCATE_ID" property="posSubcateId" />
+        <result column="SNAME" property="sname" />
+        <result column="PARENT_POS_ID" property="parentPosId" />
+        <result column="PARENT_POS_NAME" property="parentPosName" />
+        <result column="POS_NAME" property="posName" />
+        <result column="CORE_FLAG" property="coreFlag" />
+        <result column="DEGREE_CODE" property="degreeCode" />
+        <result column="EDUCATION_DEGREE" property="educationDegree" />
+        <result column="LEVEL_CODE" property="levelCode" />
+        <result column="ORG_LEVEL" property="orgLevel" />
+        <result column="KSTR" property="kstr" />
+        <result column="ACTIVE_START_DATE" property="activeStartDate" />
+        <result column="ACTIVE_END_DATE" property="activeEndDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        POS_ID, ORG_ID, POS_CATE_ID, CNAME, POS_SUBCATE_ID, SNAME, PARENT_POS_ID, PARENT_POS_NAME, POS_NAME, CORE_FLAG, DEGREE_CODE, EDUCATION_DEGREE, LEVEL_CODE, ORG_LEVEL, KSTR, ACTIVE_START_DATE, ACTIVE_END_DATE
+    </sql>
+    <select id="searchProvincePostListCount" resultType="java.lang.Integer">
+        <![CDATA[
+			SELECT count(1)
+			  FROM EHRCUC_POS_SPOS_V EPSV
+			  where 1=1
+			]]>
+        <if test="posCateId !=null and posCateId != ''">
+            and epsv.pos_cate_id = #{posCateId}
+        </if>
+        <if test="posSubcateId !=null and posSubcateId != ''">
+            and   epsv.pos_subcate_id = #{posSubcateId}
+        </if>
+        <if test="posName !=null and posName != ''">
+            and epsv.pos_name like concat("%", trim(#{posName}), "%")
+        </if>
+        and (epsv.level_code like concat('%', #{orgLevelS}, '%')
+        or epsv.level_code like concat('%', #{orgLevelD}, '%')
+        or epsv.level_code like concat('%', #{orgLevelX}, '%'))
+        <if test="educationDegree !=null and educationDegree != ''">
+            and   epsv.degree_code = #{educationDegree}
+        </if>
+
+        <if test="coreFlag !=null and coreFlag != ''">
+            and   epsv.core_flag = #{coreFlag}
+        </if>
+        <if test="eFlag =='Y'">
+            and SYSDATE BETWEEN IFNULL(EPSV.ACTIVE_START_DATE,SYSDATE - 1) AND IFNULL (EPSV.ACTIVE_END_DATE,SYSDATE + 1)
+        </if>
+        <if test="eFlag =='N'">
+            and SYSDATE NOT BETWEEN IFNULL(EPSV.ACTIVE_START_DATE,SYSDATE - 1) AND IFNULL(EPSV.ACTIVE_END_DATE,SYSDATE + 1)
+        </if>
+        <if test="eFlag =='YN'">
+            and 1 != 1
+        </if>
+        <if test="rangeId !=null and rangeId != ''">
+            and epsv.org_id IN (SELECT RNG.ORGANIZATION_ID
+            FROM HADES_RANGE_ORGANIZATION RNG
+            WHERE RNG.RANGE_ID = #{rangeId})
+        </if>
+
+    </select>
+</mapper>

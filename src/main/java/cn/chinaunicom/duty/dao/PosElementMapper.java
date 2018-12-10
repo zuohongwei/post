@@ -32,6 +32,13 @@ public interface PosElementMapper extends HrBaseMapper<PosElement> {
 
 	Integer getPosElementPagListCount(Map<String, Object> params);
 	List<PosElement> getCateList();
-
+	/**
+	 *
+	 * @Title: findPosCateByName
+	 * @Description: 根据名称和类型查询ELEMENTID
+	 * @author 张迟
+	 * @param @param params
+	 */
+    Long findPosCateByName(Map<String, Object> params);
 }
 

@@ -98,29 +98,47 @@ public class PosElement extends Model<PosElement> {
 	/**
 	 * 查询as字段
 	 */
+
 	private Integer				posCateId;
 	private String				posCateName;
 	private String				type;
-	private Integer				parentId;
-	private Integer				code;
+	private String				parentId;
+	private String				code;
 	private String				parentName;
-	private Integer				majorCount;
-	private Integer				posSubcateCount;
+	private String				majorCount;
+	private String				posSubcateCount;
 
-	public Integer getPosSubcateCount() {
-		return posSubcateCount;
+
+	public String getParentId() {
+		return parentId;
 	}
 
-	public void setPosSubcateCount(Integer posSubcateCount) {
-		this.posSubcateCount = posSubcateCount;
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
 	}
 
-	public Integer getMajorCount() {
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getMajorCount() {
 		return majorCount;
 	}
 
-	public void setMajorCount(Integer majorCount) {
+	public void setMajorCount(String majorCount) {
 		this.majorCount = majorCount;
+	}
+
+	public String getPosSubcateCount() {
+		return posSubcateCount;
+	}
+
+	public void setPosSubcateCount(String posSubcateCount) {
+		this.posSubcateCount = posSubcateCount;
 	}
 
 	public String getParentName() {
@@ -155,21 +173,7 @@ public class PosElement extends Model<PosElement> {
 		this.type = type;
 	}
 
-	public Integer getParentId() {
-		return parentId;
-	}
 
-	public void setParentId(Integer parentId) {
-		this.parentId = parentId;
-	}
-
-	public Integer getCode() {
-		return code;
-	}
-
-	public void setCode(Integer code) {
-		this.code = code;
-	}
 
 	public Integer getElementId() {
 		return elementId;

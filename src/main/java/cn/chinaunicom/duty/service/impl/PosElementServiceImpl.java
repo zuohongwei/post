@@ -1,4 +1,3 @@
-
 package cn.chinaunicom.duty.service.impl;
 
 import java.util.List;
@@ -31,14 +30,11 @@ public class PosElementServiceImpl extends HrServiceImpl<PosElementMapper, PosEl
 	PosElementMapper mapper;
 
 	@Override
-	public List<PosElement> getElementList(Integer versionId) {
-		return mapper.getElementList(versionId);
+	public List<PosElement> getElementList(@Param("versionId")String versionId,@Param("elementType")String elementType,@Param("posCateId")String posCateId) {
+		return mapper.getElementList(versionId,elementType,posCateId);
 	}
 
-	@Override
-	public List<PosElement> getSubList(@Param("versionId") Integer versionId, @Param("posCateId") Integer posCateId) {
-		return mapper.getSubList(versionId, posCateId);
-	}
+
 
 	@Override
 	public List<PosElement> getPosElementPagList(Page<PosElement> objectPage, Map<String, Object> params) {
@@ -54,6 +50,22 @@ public class PosElementServiceImpl extends HrServiceImpl<PosElementMapper, PosEl
 	public Integer getPosElementPagListCount(Map<String, Object> params) {
 		return mapper.getPosElementPagListCount(params);
 	}
+
+	@Override
+	public List<String> getIds(String elementName) {
+		return mapper.getIds(elementName);
+	}
+
+	@Override
+	public Integer updateElementInfo(List<PosElement> list) {
+		return mapper.updateElementInfo(list);
+	}
+
+	@Override
+	public List<PosElement> getDutyList() {
+		return mapper.getDutyList();
+	}
+
 
 	@Override
 	public List<PosElement> getCateList() {

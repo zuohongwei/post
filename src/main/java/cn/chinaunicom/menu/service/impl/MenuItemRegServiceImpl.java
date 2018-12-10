@@ -5,6 +5,8 @@ import cn.chinaunicom.menu.entity.MenuItemReg;
 import cn.chinaunicom.menu.dao.MenuItemRegMapper;
 import cn.chinaunicom.menu.service.MenuItemRegService;
 import cn.chinaunicom.platform.service.impl.HrServiceImpl;
+import cn.chinaunicom.platform.utils.Constant;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,6 @@ public class MenuItemRegServiceImpl extends HrServiceImpl<MenuItemRegMapper, Men
 
 	@Override
 	public List<MenuList> getMenuList() {
-		return mapper.getMenuList();
+		return mapper.getMenuList(Constant.MODULE);
 	}
 }

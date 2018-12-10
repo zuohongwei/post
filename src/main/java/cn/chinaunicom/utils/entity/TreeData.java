@@ -1,7 +1,11 @@
 package cn.chinaunicom.utils.entity;
 
 import java.util.List;
-
+/**
+ *
+ * @author wangrunpu
+ * @since 2018-10-24
+ */
 public class TreeData {
 
 	private String value;

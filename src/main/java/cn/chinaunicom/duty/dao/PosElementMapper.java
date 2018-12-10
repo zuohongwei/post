@@ -1,4 +1,3 @@
-
 package cn.chinaunicom.duty.dao;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import cn.chinaunicom.platform.dao.HrBaseMapper;
  */
 public interface PosElementMapper extends HrBaseMapper<PosElement> {
 
-	List<PosElement> getElementList(Integer versionId);
+	List<PosElement> getElementList(@Param("versionId")String versionId,@Param("elementType")String elementType,@Param("posCateId")String posCateId);
 
 	List<PosElement> getSubList(@Param("versionId") Integer versionId, @Param("posCateId") Integer posCateId);
 
@@ -40,5 +39,14 @@ public interface PosElementMapper extends HrBaseMapper<PosElement> {
 	 * @param @param params
 	 */
     Long findPosCateByName(Map<String, Object> params);
+
+	List<String> getIds(String elementName);
+
+
+	Integer updateElementInfo(List<PosElement>list);
+
+	List<PosElement> getDutyList();
+
+
 }
 

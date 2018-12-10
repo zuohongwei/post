@@ -40,4 +40,12 @@
 			   AND DATE_FORMAT(sysdate(), '%Y-%m-%d %H:%i:%S') BETWEEN EPV.EFFETIVE_START_DATE AND
 			       DATE_FORMAT(IFNULL(EPV.EFFETIVE_END_DATE,date_sub(sysdate(), interval -1 day)),'%Y-%m-%d %H:%i:%S')
 	</select>
+	
+	<select id="getVersionList"  resultMap="BaseResultMap">
+			SELECT EPV.VERSION_ID as versionId, 
+				   EPV.VERSION_NAME as versionName
+			  FROM EHRCUC_POS_VER EPV
+			 WHERE EPV.VERSION_CATE = 'P'
+			 order by EPV.VERSION_ID desc
+	</select>
 </mapper>

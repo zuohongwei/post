@@ -54,7 +54,7 @@ dependencies {
 	}
 	compile('org.springframework.boot:spring-boot-starter-undertow')
 	compile('org.springframework.boot:spring-boot-starter-data-redis')
-	compile('org.flywaydb:flyway-core')
+	//compile('org.flywaydb:flyway-core')
 	compile("com.baomidou:mybatis-plus:${mybatisPlusVersion}")
 	compile("com.baomidou:mybatisplus-spring-boot-starter:${springMybatisPlusVersion}")
 	compile("org.apache.velocity:velocity-engine-core:${velocityVersion}")
@@ -69,7 +69,7 @@ dependencies {
 
 	compile("com.amazonaws:aws-java-sdk-s3")
 	compile group:'cn.afterturn', name:'easypoi-spring-boot-starter', version:'3.2.0'
-
+	compile 'org.freemarker:freemarker:2.3.28'
 	runtime('mysql:mysql-connector-java')
 
 	pmd("com.alibaba.p3c:p3c-pmd:${p3cVersion}")

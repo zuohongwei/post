@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.postionmanagement.dao.PostionManageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.postionmanagement.entity.PostionManageEntity">
+        <result column="SKID" property="skid" />
+        <result column="SKNAME" property="skname" />
+        <result column="KID" property="kid" />
+        <result column="KNAME" property="kname" />
+        <result column="KCODE" property="kcode" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="MID" property="mid" />
+        <result column="MNAME" property="mname" />
+        <result column="SID" property="sid" />
+        <result column="SNAME" property="sname" />
+        <result column="CID" property="cid" />
+        <result column="CNAME" property="cname" />
+        <result column="ULEVEL" property="ulevel" />
+        <result column="SKSTR" property="skstr" />
+    </resultMap>
+
+    <resultMap id="SelectMap" type="cn.chinaunicom.postionmanagement.entity.PostionManageEntity">
+        <result column="KID" property="kid" />
+        <result column="KNAME" property="kname" />
+    </resultMap>
+
+
+    <resultMap id="assignSeniorKeyResp" type="cn.chinaunicom.postionmanagement.entity.AssignSeniorKeyResp">
+        <result column="KID" property="kid" />
+        <result column="KNAME" property="kname" />
+        <result column="idStr" property="idStr" />
+        <result column="skStr" property="skStr" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        SKID, SKNAME, KID, KNAME, KCODE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, MID, MNAME, SID, SNAME, CID, CNAME, ULEVEL, SKSTR
+    </sql>
+
+    <!-- 查询关键职责 -->
+    <select id="getKeyResp" resultMap="SelectMap">
+        SELECT
+            v.KID AS kid,
+            v.KNAME AS kname
+        FROM
+	        ehrcuc_pos_tree_v v
+        WHERE
+	        v.CNAME = '管理序列'
+        <if test="mId!=null and mId!=''">
+            AND v.MID =${mId}
+        </if>
+    </select>
+
+    <select id="getResp" resultMap="assignSeniorKeyResp">
+        SELECT DISTINCT
+            EPTV.KID as kid,
+            EPTV.KNAME as kname,
+            concat(EPTV.CID,'.',EPTV.SID,'.',EPTV.MID,'.',EPTV.KID)as idStr,
+            EPTV.SKSTR as skStr
+        FROM EHRCUC_POS_TREE_V EPTV
+        WHERE EPTV.KID = #{kid}
+    </select>
+
+    <!-- 获取员工分配关键职责当前版本开始日期 -->
+    <select id="getEmpAssCurVersionInfo"  resultType="cn.chinaunicom.postionmanagement.entity.PosVersionInfo">
+        select VERSION_ID          as versionId,
+        VERSION_NAME        as versionName,
+        VERSION_CATE        as versionCate,
+        REFERENCE_ID        as referenceId,
+        EFFETIVE_START_DATE as effetiveStartDate,
+        EFFETIVE_END_DATE   as effetiveEndDate,
+        CREATED_BY          as createdBy,
+        CREATION_DATE       as creationDate,
+        LAST_UPDATED_BY     as lastUpdatedBy,
+        LAST_UPDATE_DATE    as lastUpdateDate,
+        ATTRIBUTE1          as attribute1,
+        ATTRIBUTE2          as attribute2,
+        ATTRIBUTE3          as attribute3,
+        ATTRIBUTE4          as attribute4,
+        ATTRIBUTE5          as attribute5,
+        ATTRIBUTE6          as attribute6,
+        ATTRIBUTE7          as attribute7,
+        ATTRIBUTE8          as attribute8,
+        ATTRIBUTE9          as attribute9,
+        ATTRIBUTE10         as attribute10
+        from EHRCUC_POS_VER epv
+        where 1 = 1
+        and epv.version_cate = 'EK'
+        and DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') between DATE_FORMAT(epv.effetive_start_date,'%Y-%m-%d %H:%i:%S')  and
+        IFNULL(epv.effetive_end_date,date_add(now(),INTERVAL 1 DAY ))
+        <if test="referenceId !=null and referenceId!=''">
+           and epv.reference_id = #{referenceId}
+        </if>
+    </select>
+
+
+    <!-- 更改审批状态 -->
+    <update id="updateKeyrespVerStatus" >
+   		update ehrcuc_pos_ver v
+		   set v.attribute1       = '0',
+		       v.last_updated_by  = #{operater},
+		       v.last_update_date = sysdate()
+		 where v.version_id = #{versionId}
+   	</update>
+
+    <select id="selectEmpAssVerIndexNew" parameterType="java.util.Map" resultType="int">
+		select IFNULL(max(cast(substr(epv.version_name, 9) as SIGNED )), 0) + 1
+		  from ehrcuc_pos_ver epv
+		 where 1 = 1
+		   and substr(epv.version_name, 1, 7) =
+		       (select eeb.employee_number
+		          from ehrbase_emp_basic eeb
+		         where eeb.person_id = #{personId})
+	</select>
+
+    <!-- 创建新版本 -->
+    <insert id="createNewVersion" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="version_id">
+		insert into ehrcuc_pos_ver
+		  (
+		   version_name,
+		   version_cate,
+		   reference_id,
+		   effetive_start_date,
+		   created_by,
+		   creation_date,
+		   last_updated_by,
+		   last_update_date,
+		   attribute1)
+		   values
+		   (
+		    (select eeb.employee_number from ehrbase_emp_basic eeb where eeb.person_id =CONCAT(#{personId},#{index})),
+		    'EK',
+		    #{referenceId},
+		    date_format(sysdate(), '%Y-%m-%d'),
+		    #{operater},
+		    sysdate(),
+		    #{operater},
+		    sysdate(),
+		    '0'
+		   )
+	</insert>
+
+    <update id="updatePreVersionEndDate" parameterType="java.util.Map">
+		update ehrcuc_pos_ver epv
+		   set epv.effetive_end_date = DATE_FORMAT(DATE_SUB( sysdate(), INTERVAL 1 MONTH),'%Y-%m-%d'),
+		       epv.last_updated_by = #{operater},
+		       epv.last_update_date = sysdate()
+		 where epv.version_id = #{versionId}
+	</update>
+
+    <!-- 删除员工当前版本分配记录 -->
+    <delete id="delCurVerAssRecord"  parameterType="java.util.Map">
+        delete epee from ehrcuc_pos_emp_element epee
+        where  1=1
+        <if test="personId!=null and personId!= ''">
+            AND epee.person_id = #{personId}
+        </if>
+        <if test="versionId!=null and versionId!= ''">
+            AND epee.version_id = #{versionId}
+        </if>
+    </delete>
+
+    <!-- 插入员工分配关键职 -->
+    <insert id="saveEmpAssKeyresp" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="assigment_id">
+		insert into ehrcuc_pos_emp_element
+		  (
+		   version_id,
+		   person_id,
+		   ebs_ass_id,
+		   element_id,
+		   role_id,
+		   weight,
+		   analyse_concatenate,
+		   use_concatenate,
+		   created_by,
+		   creation_date,
+		   last_updated_by,
+		   last_update_date,
+		   sub_resp_str)
+
+		   values(
+		   #{versionId},
+		   #{p.personId},
+		   #{p.ebsAssId},
+		   #{p.elementId},
+		   #{p.roleId},
+		   #{p.weight},
+		   '',
+		   #{p.useConcatenate},
+		   #{p.createdBy},
+		   sysdate(),
+		   #{p.lastUpdatedBy},
+		   sysdate(),
+		   #{p.subRespStr}
+		   )
+	</insert>
+
+
+    <select id="getSelecInfo" resultMap="assignSeniorKeyResp">
+		 SELECT DISTINCT EPTV.KID as kid,
+                          EPTV.KNAME as kname,
+                          CONCAT(EPTV.CID,'.',EPTV.SID,'.',EPTV.MID,'.',EPTV.KID) as idStr,
+                          EPTV.SKSTR as skStr
+         FROM EHRCUC_POS_TREE_V EPTV
+	     WHERE EPTV.KID = #{id}
+	</select>
+
+    <!-- 查询管理人员职位管理（集团） -->
+    <select id="selectPositionJT" resultMap="assignSeniorKeyResp">
+      SELECT
+        orgId,
+        name,
+        assignMentId,
+        personId,
+        employeeNumber,
+        fullName,
+        jobName,
+        versonId,
+        elementId,
+        cFlag,
+        mId,
+        mname,
+        kname,
+        kid
+        FROM
+        (
+        SELECT
+        O.ORGANIZATION_ID AS orgId,
+        O.NAME AS NAME,
+        O.LEV,
+        O.CNC_ORG_SORT_CODE,
+        EAA.ASSIGNMENT_ID AS assignMentId,
+        EEB.PERSON_ID AS personId,
+        EEB.EMPLOYEE_NUMBER AS employeeNumber,
+        EEB.FULL_NAME AS fullName,
+        EMU.JOB_NAME AS jobName,
+        IFNULL ( EK.VERSION_ID, 0 ) AS versonId,
+        IFNULL ( EK.REFERENCE_ID, 0 ) AS elementId,
+        EK.C_FLAG AS cFlag,
+        IFNULL ( EK.Mid, 0 ) AS mId,
+        EK.MNAME AS mname,
+        EK.KNAME AS kname,
+        IF
+        ( EK.kid = NULL, 0, EK.kid ) AS kid
+        FROM
+
+        EHRBASE_EMP_BASIC EEB,
+        EHRBASE_MANAGER_USER EMU,
+        HADES_RANGE_ORGANIZATION RO,
+        (
+        SELECT
+        EO.ORGANIZATION_ID,
+        EO.NAME,
+        EO.LEV,
+        EO.CNC_ORG_SORT_CODE,
+        EO.DATE_TO,
+        EO.DATE_FROM
+        FROM
+        EHRBASE_ORGANIZATION_ALL EO
+        WHERE
+        EO.ORGANIZATION_ID IN
+        <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND SYSDATE( ) BETWEEN IFNULL ( EO.DATE_FROM, DATE_SUB( SYSDATE( ), INTERVAL 1 DAY ) )
+        AND IFNULL( EO.DATE_TO, DATE_ADD( SYSDATE( ), INTERVAL 1 DAY ) )
+        ) O,
+        (
+        SELECT
+        EPV.VERSION_ID,
+        EPV.REFERENCE_ID,
+        EPV.ATTRIBUTE1 C_FLAG,
+        DATE_FORMAT ( EPV.LAST_UPDATE_DATE, 'Y%-m%-d% H%-i%-S%' ) LAST_UPDATE_DATE,
+        EPEE.PERSON_ID,
+        EPEM.ELEMENT_ID MID,
+        EPEM.ELEMENT_NAME MNAME,
+        EPEK.ELEMENT_ID KID,
+        EPEK.ELEMENT_NAME KNAME,
+        HL.MEANING ROLE_NAME,
+        EPEE.WEIGHT
+        FROM
+        EHRCUC_POS_VER EPV,
+        EHRCUC_POS_EMP_ELEMENT EPEE,
+        EHRCUC_POS_ELEMENT EPEM,
+        EHRCUC_POS_ELEMENT EPEK,
+        HADES_LOOKUPS HL
+        WHERE
+        1 = 1
+        AND EPV.VERSION_CATE = 'EK'
+        AND SYSDATE( )BETWEEN EPV.EFFETIVE_START_DATE
+        AND IFNULL( EPV.EFFETIVE_END_DATE, DATE_ADD( SYSDATE( ), INTERVAL 1 DAY ) )
+        AND EPV.VERSION_ID = EPEE.VERSION_ID
+        AND (
+        SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(EPEE.USE_CONCATENATE,'.',-2),'.',1) FROM DUAL
+        ) = EPEM.ELEMENT_ID
+        AND EPEE.ELEMENT_ID = EPEK.ELEMENT_ID
+        AND HL.LOOKUP_TYPE = 'EHRCUC_POS_ROLE_TYPE'
+        AND HL.LOOKUP_CODE = EPEE.ROLE_ID
+        AND EXISTS (
+        SELECT
+        1
+        FROM
+        EHRCUC_POS_VER EV,
+        EHRCUC_POS_ELEMENT_STRUCTURE ES
+        WHERE
+        1 = 1
+        AND EV.VERSION_CATE = 'P'
+        AND SYSDATE( ) BETWEEN EV.EFFETIVE_START_DATE
+        AND IFNULL ( EV.EFFETIVE_END_DATE, DATE_ADD( SYSDATE( ), INTERVAL 1 DAY ) )
+        AND EV.VERSION_ID = ES.VERSION_ID
+        AND IFNULL ( ES.ATTRIBUTE1, 'Y' ) = 'Y'
+        AND ES.ELEMENT_ID_CHILD = EPEK.ELEMENT_ID
+        )
+        ) EK
+        LEFT JOIN EHRBASE_ASSIGNMENTS_ALL EAA ON EAA.ASSIGNMENT_ID = EK.REFERENCE_ID
+        WHERE
+        1 = 1
+        AND EEB.USER_PERSON_TYPE IN ( '正式', '其他从业' )
+        AND IFNULL ( EAA.ASSIGNMENT_STATUS_TYPE_ID, 1 ) = 1
+        AND SYSDATE( ) BETWEEN EAA.EFFECTIVE_START_DATE
+        AND EAA.EFFECTIVE_END_DATE
+        AND EEB.PERSON_ID = EAA.PERSON_ID
+        AND EMU.LEVEL_TYPE = #{level}
+        AND EEB.EMPLOYEE_NUMBER = EMU.EMPLOYEE_NUMBER
+        AND RO.ORGANIZATION_ID = O.ORGANIZATION_ID
+        AND RO.RANGE_ID = #{rangeId}
+        AND EAA.ORGANIZATION_ID = O.ORGANIZATION_ID
+        ) R
+        WHERE
+        1 = 1
+        <if test="kid!=-1 and kid != 0">
+            AND R.KID = #{kid}
+        </if>
+        ORDER BY
+        R.NAME,
+        R.jobName DESC,
+        employeeNumber
+        LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <!-- 计算管理人员职位管理（集团）查询个数 -->
+    <select id="countPositionJT" resultType="int" parameterType="map">
+        SELECT
+        count(1)
+        FROM
+        (
+        SELECT
+        O.ORGANIZATION_ID AS orgId,
+        O.NAME AS NAME,
+        O.LEV,
+        O.CNC_ORG_SORT_CODE,
+        EAA.ASSIGNMENT_ID AS assignMentId,
+        EEB.PERSON_ID AS personId,
+        EEB.EMPLOYEE_NUMBER AS employeeNumber,
+        EEB.FULL_NAME AS fullName,
+        EMU.JOB_NAME AS jobName,
+        IFNULL ( EK.VERSION_ID, 0 ) AS versonId,
+        IFNULL ( EK.REFERENCE_ID, 0 ) AS elementId,
+        EK.C_FLAG AS cFlag,
+        IFNULL ( EK.Mid, 0 ) AS mId,
+        EK.MNAME AS mname,
+        EK.KNAME AS kname,
+        IF
+        ( EK.kid = NULL, 0, EK.kid ) AS kid
+        FROM
+
+        EHRBASE_EMP_BASIC EEB,
+        EHRBASE_MANAGER_USER EMU,
+        HADES_RANGE_ORGANIZATION RO,
+        (
+        SELECT
+        EO.ORGANIZATION_ID,
+        EO.NAME,
+        EO.LEV,
+        EO.CNC_ORG_SORT_CODE,
+        EO.DATE_TO,
+        EO.DATE_FROM
+        FROM
+        EHRBASE_ORGANIZATION_ALL EO
+        WHERE
+        EO.ORGANIZATION_ID IN
+        <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND SYSDATE( ) BETWEEN IFNULL ( EO.DATE_FROM, DATE_SUB( SYSDATE( ), INTERVAL 1 DAY ) )
+        AND IFNULL( EO.DATE_TO, DATE_ADD( SYSDATE( ), INTERVAL 1 DAY ) )
+        ) O,
+        (
+        SELECT
+        EPV.VERSION_ID,
+        EPV.REFERENCE_ID,
+        EPV.ATTRIBUTE1 C_FLAG,
+        DATE_FORMAT ( EPV.LAST_UPDATE_DATE, 'Y%-m%-d% H%-i%-S%' ) LAST_UPDATE_DATE,
+        EPEE.PERSON_ID,
+        EPEM.ELEMENT_ID MID,
+        EPEM.ELEMENT_NAME MNAME,
+        EPEK.ELEMENT_ID KID,
+        EPEK.ELEMENT_NAME KNAME,
+        HL.MEANING ROLE_NAME,
+        EPEE.WEIGHT
+        FROM
+        EHRCUC_POS_VER EPV,
+        EHRCUC_POS_EMP_ELEMENT EPEE,
+        EHRCUC_POS_ELEMENT EPEM,
+        EHRCUC_POS_ELEMENT EPEK,
+        HADES_LOOKUPS HL
+        WHERE
+        1 = 1
+        AND EPV.VERSION_CATE = 'EK'
+        AND SYSDATE( )BETWEEN EPV.EFFETIVE_START_DATE
+        AND IFNULL( EPV.EFFETIVE_END_DATE, DATE_ADD( SYSDATE( ), INTERVAL 1 DAY ) )
+        AND EPV.VERSION_ID = EPEE.VERSION_ID
+        AND (
+        SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(EPEE.USE_CONCATENATE,'.',-2),'.',1) FROM DUAL
+        ) = EPEM.ELEMENT_ID
+        AND EPEE.ELEMENT_ID = EPEK.ELEMENT_ID
+        AND HL.LOOKUP_TYPE = 'EHRCUC_POS_ROLE_TYPE'
+        AND HL.LOOKUP_CODE = EPEE.ROLE_ID
+        AND EXISTS (
+        SELECT
+        1
+        FROM
+        EHRCUC_POS_VER EV,
+        EHRCUC_POS_ELEMENT_STRUCTURE ES
+        WHERE
+        1 = 1
+        AND EV.VERSION_CATE = 'P'
+        AND SYSDATE( ) BETWEEN EV.EFFETIVE_START_DATE
+        AND IFNULL ( EV.EFFETIVE_END_DATE, DATE_ADD( SYSDATE( ), INTERVAL 1 DAY ) )
+        AND EV.VERSION_ID = ES.VERSION_ID
+        AND IFNULL ( ES.ATTRIBUTE1, 'Y' ) = 'Y'
+        AND ES.ELEMENT_ID_CHILD = EPEK.ELEMENT_ID
+        )
+        ) EK
+        LEFT JOIN EHRBASE_ASSIGNMENTS_ALL EAA ON EAA.ASSIGNMENT_ID = EK.REFERENCE_ID
+        WHERE
+        1 = 1
+        AND EEB.USER_PERSON_TYPE IN ( '正式', '其他从业' )
+        AND IFNULL ( EAA.ASSIGNMENT_STATUS_TYPE_ID, 1 ) = 1
+        AND SYSDATE( ) BETWEEN EAA.EFFECTIVE_START_DATE
+        AND EAA.EFFECTIVE_END_DATE
+        AND EEB.PERSON_ID = EAA.PERSON_ID
+        AND EMU.LEVEL_TYPE = #{level}
+        AND EEB.EMPLOYEE_NUMBER = EMU.EMPLOYEE_NUMBER
+        AND RO.ORGANIZATION_ID = O.ORGANIZATION_ID
+        AND RO.RANGE_ID = #{rangeId}
+        AND EAA.ORGANIZATION_ID = O.ORGANIZATION_ID
+        ) R
+        WHERE
+        1 = 1
+        <if test="kid!=-1 and kid != 0">
+            AND R.KID = #{kid}
+        </if>
+        ORDER BY
+        R.NAME,
+        R.jobName DESC,
+        employeeNumber
+    </select>
+
+    <select id="getIdByPid" resultType="Integer" parameterType="java.util.List">
+        SELECT
+        EO.ORGANIZATION_ID
+        FROM EHRBASE_ORGANIZATION_ALL EO
+        WHERE
+        EO.ORGANIZATION_ID_PARENT IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getAllDetailJT" resultType="cn.chinaunicom.postionmanagement.entity.AssignSeniorKeyResp" >
+       SELECT DISTINCT
+            CAST(DATE_FORMAT(EPV.EFFETIVE_START_DATE,'%Y-%m-%d') AS CHAR) AS startDate,
+            CAST(DATE_FORMAT(EPV.EFFETIVE_END_DATE,'%Y-%m-%d') AS CHAR) AS endDate,
+            IFNULL( EPTV.kid, 0 ) kid,
+            EPTV.KNAME kname
+        FROM
+            EHRCUC_POS_EMP_ELEMENT EPEE LEFT JOIN ehrcuc_pos_tree_v EPTV ON EPTV.KID = EPEE.ELEMENT_ID ,
+            ehrcuc_pos_ver EPV
+
+        WHERE
+            EPEE.VERSION_ID = EPV.VERSION_ID
+            AND EPEE.EBS_ASS_ID = EPV.REFERENCE_ID
+
+            AND EPV.version_cate = 'EK'
+            AND EPEE.EBS_ASS_ID = #{assignMentId}
+
+        ORDER BY
+	startDate DESC
+    </select>
+
+
+</mapper>

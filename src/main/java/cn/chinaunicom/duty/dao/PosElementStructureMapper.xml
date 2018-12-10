@@ -24,9 +24,71 @@
         <result column="ATTRIBUTE10" property="attribute10" />
     </resultMap>
 
+
+
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         STRUCTURE_ID, VERSION_ID, ELEMENT_ID_PARENT, ELEMENT_ID_CHILD, CREATED_BY, CREATION_DATE, LAST_UPDATED_BY, LAST_UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10
     </sql>
+
+
+    <select id="getParentInfo"  resultMap="BaseResultMap">
+			select emp.ELEMENT_ID as posCateId,
+				  emp.ELEMENT_NAME as posCateName,
+				  emp.ELEMENT_TYPE as elementType,
+				  emp.ELEMENT_CODE as elementCode,
+				  temp.ELEMENT_ID_PARENT as parentId,
+				  (SELECT COUNT(1)
+			         FROM EHRCUC_POS_ELEMENT_STRUCTURE S
+			        WHERE S.ELEMENT_ID_PARENT = emp.ELEMENT_ID
+			          AND S.VERSION_ID = #{versionId}
+			          AND S.ATTRIBUTE1 IS NULL) AS posSubCateCount
+
+			from (select tl.lv,t.* from (
+                    select @id idlist, @lv:=@lv+1 lv,
+                    (select @id:=group_concat(ELEMENT_ID_PARENT separator ',') from EHRCUC_POS_ELEMENT_STRUCTURE where find_in_set(ELEMENT_ID_CHILD,@id)) sub
+                    from EHRCUC_POS_ELEMENT_STRUCTURE,(select @id:=#{elementIdParent},@lv:=0) vars
+                    where @id is not null) tl,EHRCUC_POS_ELEMENT_STRUCTURE t
+                where find_in_set(t.ELEMENT_ID_CHILD,tl.idlist)AND attribute1 IS NULL  AND VERSION_ID = #{versionId})temp,
+                EHRCUC_POS_ELEMENT emp
+                       WHERE 1 = 1
+					   AND temp.ELEMENT_ID_CHILD = emp.ELEMENT_ID
+					   AND emp.ELEMENT_TYPE in('10','20')  ORDER BY emp.ELEMENT_CODE
+	</select>
+
+
+
+
+    <insert id="createElementStructureInfo" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="STRUCTURE_ID">
+
+            insert into ehrcuc_pos_element_structure(
+            STRUCTURE_ID,
+            VERSION_ID,
+            ELEMENT_ID_PARENT,
+            ELEMENT_ID_CHILD,
+
+            CREATED_BY,
+            CREATION_DATE,
+            LAST_UPDATED_BY,
+            LAST_UPDATE_DATE
+            )values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.structureId},
+            #{item.versionId},
+            #{item.elementIdParent},
+            #{item.elementIdChild},
+
+            #{item.createdBy},
+            #{item.creationDate},
+            #{item.lastUpdatedBy},
+            #{item.lastUpdateDate}
+            )
+        </foreach>
+    </insert>
+
+
+
 
 </mapper>

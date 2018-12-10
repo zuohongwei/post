@@ -22,9 +22,7 @@ import cn.chinaunicom.platform.service.IHrService;
  */
 public interface PosElementService extends IHrService<PosElement> {
 
-	List<PosElement> getElementList(Integer versionId);
-
-	List<PosElement> getSubList(@Param("versionId") Integer versionId, @Param("posCateId") Integer posCateId);
+	List<PosElement> getElementList(@Param("versionId")String versionId,@Param("elementType")String elementType,@Param("posCateId")String posCateId);
 
 	List<PosElement> getPosElementPagList(Page<PosElement> objectPage, Map<String, Object> params);
 
@@ -33,6 +31,12 @@ public interface PosElementService extends IHrService<PosElement> {
 	List<PosElement> getCateList();
 
 	Integer getPosElementPagListCount(Map<String, Object> params);
+    List<String> getIds(String elementName);
+
+    Integer updateElementInfo(List<PosElement>list);
+
+    List<PosElement> getDutyList();
 }
+
 
 

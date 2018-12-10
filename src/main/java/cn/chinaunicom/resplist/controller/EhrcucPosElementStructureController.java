@@ -1,11 +1,10 @@
 package cn.chinaunicom.resplist.controller;
 
-import cn.chinaunicom.common.FileUtil;
 import cn.chinaunicom.platform.utils.MessageResponse;
 import cn.chinaunicom.resplist.entity.EhrcucPosElementStructure;
 import cn.chinaunicom.resplist.entity.RespsInfo;
 import cn.chinaunicom.resplist.service.EhrcucPosElementStructureService;
-
+import cn.chinaunicom.utils.FileUtil;
 import com.baomidou.mybatisplus.plugins.Page;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +36,7 @@ import java.util.Map;
 @RequestMapping("/api/PosElementStructure")
 public class EhrcucPosElementStructureController {
 
-	@Resource
+	@Autowired
     EhrcucPosElementStructureService service;
 
 	@ApiOperation(
@@ -155,8 +153,8 @@ public class EhrcucPosElementStructureController {
 			httpMethod = "POST")
 	@PostMapping("/exportRespsInfo")
 	@ResponseBody
-	public void exportRespsInfo(@RequestParam("sequence") String sequence, @RequestParam("respName") String respName, @RequestParam("status") String status,
-			@RequestParam("levelType") String[] levelTypes, @RequestParam("pageSize") String pageSize, @RequestParam("pageNum") String pageNum, HttpServletResponse resp) {
+	public void exportRespsInfo(@RequestParam(value="sequence",required=false) String sequence, @RequestParam(value="respName",required=false) String respName, @RequestParam(value="status",required=false) String status,
+			@RequestParam(value="levelType",required=false) String[] levelTypes, @RequestParam("pageSize") String pageSize, @RequestParam("pageNum") String pageNum, HttpServletResponse resp) {
 		String levelType = "";
 		if (levelTypes != null && levelTypes.length > 0)
 		{

@@ -1,7 +1,9 @@
 package cn.chinaunicom.duty.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -58,6 +60,77 @@ public class PosElementStructure extends Model<PosElementStructure> {
 	private String				attribute9;
 	@TableField("ATTRIBUTE10")
 	private String				attribute10;
+
+
+	/**
+	 * 前端返回字段
+	 * @return
+	 */
+	private String posCateId;
+	private String posCateName;
+	private String elementType;
+	private int elementCode;
+	private String parentId;
+	private String posSubCateCount;
+
+
+	private List<PosElementStructure> children = new ArrayList<>();
+
+	public List<PosElementStructure> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<PosElementStructure> children) {
+		this.children = children;
+	}
+
+	public String getPosCateId() {
+		return posCateId;
+	}
+
+	public void setPosCateId(String posCateId) {
+		this.posCateId = posCateId;
+	}
+
+	public String getPosCateName() {
+		return posCateName;
+	}
+
+	public void setPosCateName(String posCateName) {
+		this.posCateName = posCateName;
+	}
+
+	public String getElementType() {
+		return elementType;
+	}
+
+	public void setElementType(String elementType) {
+		this.elementType = elementType;
+	}
+
+	public int getElementCode() {
+		return elementCode;
+	}
+
+	public void setElementCode(int elementCode) {
+		this.elementCode = elementCode;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getPosSubCateCount() {
+		return posSubCateCount;
+	}
+
+	public void setPosSubCateCount(String posSubCateCount) {
+		this.posSubCateCount = posSubCateCount;
+	}
 
 	public Long getStructureId() {
 		return structureId;

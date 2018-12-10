@@ -52,10 +52,15 @@
     </sql>
     <!-- 查询关键职责根节点 -->
 	<select id="queryBaseRange" resultMap="MenuItemTree">
+	
 		SELECT
 			a.element_id AS menuId,
 			a.element_name menuName,
-			a.element_type levelType,
+			CASE when a.element_type='10' then "1" 
+			when a.element_type='20' then "2" 
+			when a.element_type='30' then "3" 
+	end element_type,
+					a.element_type levelType,
 			ifnull( a.pid,- 9999 ) pMenuId 
 		FROM
 		 (
@@ -67,8 +72,8 @@
 			LEFT JOIN ehrcuc_pos_element_structure s ON e.element_id = s.element_id_child 
 		WHERE
 			e.element_type = '10' 
-			AND  SYSDATE() BETWEEN ifnull ( e.DATE_FROM, SYSDATE() - 1 ) 
-			AND ifnull ( e.DATE_TO, SYSDATE() + 1 ) 
+			AND  DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN ifnull ( e.DATE_FROM, date_sub(now(),INTERVAL 1 DAY )) 
+			AND ifnull ( e.DATE_TO, DATE_ADD( sysdate(), INTERVAL 1 DAY )) 
 		 ) a 
 		ORDER BY 
 			a.element_id
@@ -78,6 +83,10 @@
 	   SELECT
 			a.element_id AS menuId,
 			a.element_name menuName,
+			CASE when a.element_type='10' then "1" 
+			when a.element_type='20' then "2" 
+			when a.element_type='30' then "3" 
+	end element_type,
 			a.element_type levelType,
 			ifnull ( a.pid,- 9999 ) pMenuId 
 		FROM
@@ -91,8 +100,8 @@
 		WHERE
 			s.element_id_parent = #{menuId}
 			
-			AND  SYSDATE() BETWEEN ifnull ( e.DATE_FROM, SYSDATE() - 1 ) 
-			AND ifnull ( e.DATE_TO, SYSDATE() + 1 ) 
+			AND  DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%S') BETWEEN ifnull ( e.DATE_FROM, date_sub(now(),INTERVAL 1 DAY )) 
+			AND ifnull ( e.DATE_TO, DATE_ADD( sysdate(), INTERVAL 1 DAY )) 
 		) a 
 		ORDER BY
 			a.element_id

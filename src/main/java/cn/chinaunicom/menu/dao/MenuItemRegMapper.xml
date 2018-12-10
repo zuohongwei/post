@@ -31,6 +31,7 @@
     <select id="getMenuList"  resultMap="MenuResultMap">
 	    SELECT hr_menuitem_reg.id,hr_menuitem_reg.pid,hr_menuitem_reg.name AS menuName,hr_menuitem_reg.iconUrl,hr_func_register.url 
 		FROM hr_menuitem_reg LEFT JOIN hr_func_register ON hr_menuitem_reg.funcode=hr_func_register.code 
+		where hr_menuitem_reg.module=#{module} 
 		ORDER BY hr_menuitem_reg.code
 	</select>
 

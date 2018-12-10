@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinaunicom.duty.dao.OrganizationAllMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinaunicom.duty.entity.OrganizationAll">
+        <id column="ORGANIZATION_ID" property="organizationId" />
+        <result column="NAME" property="name" />
+        <result column="TYPE" property="type" />
+        <result column="SUB_COUNT" property="subCount" />
+        <result column="LEV" property="lev" />
+        <result column="ORGANIZATION_ID_PARENT" property="organizationIdParent" />
+        <result column="DATE_FROM" property="dateFrom" />
+        <result column="DATE_TO" property="dateTo" />
+        <result column="CNC_ORG_SORT_CODE" property="cncOrgSortCode" />
+        <result column="CNC_SOUTH_NORTH" property="cncSouthNorth" />
+        <result column="CNC_CUNXU_SHIYE" property="cncCunxuShiye" />
+        <result column="CNC_ORG_PROVINCE" property="cncOrgProvince" />
+        <result column="CNC_BRANCH_NAME" property="cncBranchName" />
+        <result column="CNC_ORG_CODE" property="cncOrgCode" />
+        <result column="CNC_DISABLE_DATE" property="cncDisableDate" />
+        <result column="CNC_ORG_LEVEL" property="cncOrgLevel" />
+        <result column="CNC_VIRTUAL_ORG" property="cncVirtualOrg" />
+        <result column="CNC_ORG_FULLNAME" property="cncOrgFullname" />
+        <result column="ORG1" property="org1" />
+        <result column="ORG2" property="org2" />
+        <result column="ORG3" property="org3" />
+        <result column="ORG4" property="org4" />
+        <result column="ORG5" property="org5" />
+        <result column="ORG6" property="org6" />
+        <result column="ORG7" property="org7" />
+        <result column="ORG8" property="org8" />
+        <result column="ORG9" property="org9" />
+        <result column="ORG10" property="org10" />
+        <result column="CREATE_BY" property="createBy" />
+        <result column="CREATE_DATE" property="createDate" />
+        <result column="UPDATE_BY" property="updateBy" />
+        <result column="UPDATE_DATE" property="updateDate" />
+        <result column="ATTRIBUTE1" property="attribute1" />
+        <result column="ATTRIBUTE2" property="attribute2" />
+        <result column="ATTRIBUTE3" property="attribute3" />
+        <result column="ATTRIBUTE4" property="attribute4" />
+        <result column="ATTRIBUTE5" property="attribute5" />
+        <result column="ATTRIBUTE6" property="attribute6" />
+        <result column="ATTRIBUTE7" property="attribute7" />
+        <result column="ATTRIBUTE8" property="attribute8" />
+        <result column="ATTRIBUTE9" property="attribute9" />
+        <result column="ATTRIBUTE10" property="attribute10" />
+        <result column="ATTRIBUTE11" property="attribute11" />
+        <result column="ATTRIBUTE12" property="attribute12" />
+        <result column="ATTRIBUTE13" property="attribute13" />
+        <result column="ATTRIBUTE14" property="attribute14" />
+        <result column="ATTRIBUTE15" property="attribute15" />
+        <result column="ATTRIBUTE16" property="attribute16" />
+        <result column="ATTRIBUTE17" property="attribute17" />
+        <result column="ATTRIBUTE18" property="attribute18" />
+        <result column="ATTRIBUTE19" property="attribute19" />
+        <result column="ATTRIBUTE20" property="attribute20" />
+        <result column="CUC_ORG_MIN" property="cucOrgMin" />
+        <result column="CUG_ORG_LOB" property="cugOrgLob" />
+        <result column="BUSINESS_GROUP_ID" property="businessGroupId" />
+        <result column="CUC_ORI_ORG_ID" property="cucOriOrgId" />
+        <result column="CUC_NEW_ORG_ID" property="cucNewOrgId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ORGANIZATION_ID, NAME, TYPE, SUB_COUNT, LEV, ORGANIZATION_ID_PARENT, DATE_FROM, DATE_TO, CNC_ORG_SORT_CODE, CNC_SOUTH_NORTH, CNC_CUNXU_SHIYE, CNC_ORG_PROVINCE, CNC_BRANCH_NAME, CNC_ORG_CODE, CNC_DISABLE_DATE, CNC_ORG_LEVEL, CNC_VIRTUAL_ORG, CNC_ORG_FULLNAME, ORG1, ORG2, ORG3, ORG4, ORG5, ORG6, ORG7, ORG8, ORG9, ORG10, CREATE_BY, CREATE_DATE, UPDATE_BY, UPDATE_DATE, ATTRIBUTE1, ATTRIBUTE2, ATTRIBUTE3, ATTRIBUTE4, ATTRIBUTE5, ATTRIBUTE6, ATTRIBUTE7, ATTRIBUTE8, ATTRIBUTE9, ATTRIBUTE10, ATTRIBUTE11, ATTRIBUTE12, ATTRIBUTE13, ATTRIBUTE14, ATTRIBUTE15, ATTRIBUTE16, ATTRIBUTE17, ATTRIBUTE18, ATTRIBUTE19, ATTRIBUTE20, CUC_ORG_MIN, CUG_ORG_LOB, BUSINESS_GROUP_ID, CUC_ORI_ORG_ID, CUC_NEW_ORG_ID
+    </sql>
+
+
+    <select id="getTop"  resultType="java.util.Map">
+			select ORGANIZATION_ID as id ,NAME as title,ORGANIZATION_ID_PARENT as pid from ehrbase_organization_all where ORGANIZATION_ID=#{organizationId}
+	</select>
+
+    <select id="getSub"  resultType="java.util.Map">
+                            SELECT ORGANIZATION_ID as id ,NAME as title,ORGANIZATION_ID_PARENT as pid
+          FROM EHRBASE_ORGANIZATION_ALL
+         WHERE ORGANIZATION_ID in
+               (SELECT organization_id
+                  FROM EHRBASE_ORGANIZATION_ALL A
+                 WHERE  A.organization_id_parent = #{organizationId})
+           and IFNULL(DATE_TO,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')) >= DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+             order by lev
+	</select>
+
+
+    <select id="getAllIds"  resultType="java.lang.String">
+         SELECT ORGANIZATION_ID from  EHRBASE_ORGANIZATION_ALL where ORGANIZATION_ID_PARENT in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+	</select>
+
+
+</mapper>

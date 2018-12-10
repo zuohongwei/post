@@ -1,5 +1,7 @@
 package cn.chinaunicom.duty.service;
 
+import java.util.List;
+
 import cn.chinaunicom.duty.entity.PosVer;
 import cn.chinaunicom.platform.service.IHrService;
 
@@ -14,5 +16,7 @@ import cn.chinaunicom.platform.service.IHrService;
 public interface PosVerService extends IHrService<PosVer> {
 
 	PosVer getVersion();
+
+	List<PosVer> getVersionList();
 
 }

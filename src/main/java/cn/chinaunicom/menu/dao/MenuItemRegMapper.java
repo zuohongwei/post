@@ -16,5 +16,5 @@ import cn.chinaunicom.platform.dao.HrBaseMapper;
  */
 public interface MenuItemRegMapper extends HrBaseMapper<MenuItemReg> {
 
-	List<MenuList> getMenuList();
+	List<MenuList> getMenuList(String module);
 }

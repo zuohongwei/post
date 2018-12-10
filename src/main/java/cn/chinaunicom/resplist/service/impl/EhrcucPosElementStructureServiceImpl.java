@@ -1,4 +1,14 @@
+
 package cn.chinaunicom.resplist.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 import cn.chinaunicom.platform.service.impl.HrServiceImpl;
 import cn.chinaunicom.resplist.dao.EhrcucPosElementStructureMapper;
@@ -6,14 +16,6 @@ import cn.chinaunicom.resplist.entity.EhrcucPosElementStructure;
 import cn.chinaunicom.resplist.entity.MenuItemTree;
 import cn.chinaunicom.resplist.entity.RespsInfo;
 import cn.chinaunicom.resplist.service.EhrcucPosElementStructureService;
-import cn.chinaunicom.utils.dao.TreeDataMapper;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -27,10 +29,7 @@ import java.util.List;
 public class EhrcucPosElementStructureServiceImpl extends HrServiceImpl<EhrcucPosElementStructureMapper, EhrcucPosElementStructure> implements EhrcucPosElementStructureService {
 
 	@Resource
-    EhrcucPosElementStructureMapper mapper;
-
-	@Resource
-	TreeDataMapper					treemapper;
+	EhrcucPosElementStructureMapper mapper;
 
 	@Override
 	public List<EhrcucPosElementStructure> getEhrcucPosElementStructureList() {
@@ -96,3 +95,4 @@ public class EhrcucPosElementStructureServiceImpl extends HrServiceImpl<EhrcucPo
 	}
 
 }
+

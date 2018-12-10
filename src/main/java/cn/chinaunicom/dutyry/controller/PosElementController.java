@@ -22,6 +22,9 @@ import cn.chinaunicom.common.FileUtil;
 import cn.chinaunicom.duty.entity.PosElement;
 import cn.chinaunicom.duty.entity.PosElementEmp;
 import cn.chinaunicom.duty.service.PosElementService;
+import cn.chinaunicom.platform.utils.MessageResponse;
+import cn.chinaunicom.resplist.entity.MenuItemTree;
+import cn.chinaunicom.resplist.service.EhrcucPosElementStructureService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -48,9 +51,13 @@ public class PosElementController {
 	private static final String FILENAME="关键职责职级列表";
 	private static final String FILENAME_PLUS="关键职责库信息";
 	private static final String SHEET_NAME="关键职责库";
+	private static final String EXPORT_ISSUCCESS="导出成功";
+	private static final String EXPORT_NOSUCCESS="导出失败";
 
 	@Autowired
 	PosElementService			posElementService;
+	@Autowired
+	EhrcucPosElementStructureService service;
 	
 	@ApiOperation(value = "关键职责库查询列表", notes = "关键职责库查询列表", response = PosElement.class, httpMethod = "GET")
     @ApiImplicitParams({
@@ -95,16 +102,21 @@ public class PosElementController {
 		
 		
 		List<PosElement> listPlus = new ArrayList<PosElement>();
-		
+		Map<String,Object> map = new HashMap<String,Object>();
 		Page<PosElement> objectPage = new Page<>(currentPageNum, recordNum);
 
 		Map<String, Object> params = getQueryMap(sequence, sequenceName, respName, status, cRespName, levelType);
 		listPlus = posElementService.getPosElementPagList(objectPage, params);
+		Integer count = posElementService.getPosElementPagListCount(params);
 		if (listPlus == null)
 		{
 			listPlus = new ArrayList<PosElement>();
 		}
-		return new ResponseEntity<>(listPlus, HttpStatus.OK);
+		map.put("list", listPlus);
+		map.put("count", count);
+		map.put("currentPageNum", currentPageNum);
+		map.put("recordNum", recordNum);
+		return new ResponseEntity<>(map, HttpStatus.OK);
 	
     }
 	
@@ -150,19 +162,65 @@ public class PosElementController {
 															required = false) String[] levelType,
 													HttpServletResponse response){
 		
-		
+			MessageResponse vo = new MessageResponse();
 			List<PosElementEmp> list = new ArrayList<PosElementEmp>();
 			Map<String, Object> params = getQueryMap(sequence, sequenceName, respName, status, cRespName, levelType);
 			list=posElementService.getPosElementPagList(params);
 			if(flag!=null&&"L".equals(flag)){
-				FileUtil.exportExcel(list, null, PosElementController.SHEET_NAME, PosElementEmp.class, PosElementController.FILENAME, response);
+				try
+				{
+					FileUtil.exportExcel(list, null, PosElementController.SHEET_NAME, PosElementEmp.class, PosElementController.FILENAME, response);
+					vo.setMsg(PosElementController.EXPORT_ISSUCCESS);
+				} catch (Exception e)
+				{
+					vo.setMsg(PosElementController.EXPORT_NOSUCCESS);
+				}
+				
 			}else {
-				FileUtil.exportExcel(list, null, PosElementController.SHEET_NAME, PosElementEmp.class, PosElementController.FILENAME_PLUS, response);
+				try
+				{
+					FileUtil.exportExcel(list, null, PosElementController.SHEET_NAME, PosElementEmp.class, PosElementController.FILENAME_PLUS, response);
+					vo.setMsg(PosElementController.EXPORT_ISSUCCESS);
+				} catch (Exception e)
+				{
+					vo.setMsg(PosElementController.EXPORT_NOSUCCESS);
+				}
+				
 			}
 		
-			return new ResponseEntity<>(null, HttpStatus.OK);
+			return new ResponseEntity<>(vo, HttpStatus.OK);
 	
     }
+	
+	
+	
+	@ApiOperation(value = "职责树全量数据", notes = "职责树全量数据", response = PosElement.class, httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "x-token-code", value = "用户登录令牌", paramType = "header", dataType = "String", required = true, defaultValue = "xjMjL0m2A6d1mOIsb9uFk+wuBIcKxrg4")
+    })
+    @ApiResponses({
+            @ApiResponse(
+                    code = 200,
+                    message = "获取数据成功",
+                    response = Page.class
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "未查询到数据"
+            )
+    })
+	@GetMapping("/tree")
+    public ResponseEntity<Object> getPosElementTree(){
+		List<MenuItemTree> list = service.queryRespRange();
+		if(list==null) {
+			list=new ArrayList<MenuItemTree>();
+		}
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	
+    }
+	
+	
+	
 	
 	
 	
@@ -175,9 +233,6 @@ public class PosElementController {
 	*@param status
 	*@param cRespName
 	*@param levelType
-	*@param currentPageNum
-	*@param recordNum
-	*@param isExport
 	*@return Map<String,Object>
 	 */
 	private Map<String,Object>  getQueryMap(String sequence,String sequenceName,String respName,String status,String cRespName,String[] levelType) {

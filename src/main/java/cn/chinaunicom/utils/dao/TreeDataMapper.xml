@@ -46,7 +46,7 @@
               #{id}
         </foreach>
        	<if test="wherePart != null and wherePart != ''">
-            AND #{ wherePart }
+            AND ${ wherePart }
         </if>
 	</select>
 	
@@ -60,7 +60,7 @@
 		where 
         	${idCode} = #{id}
        	<if test="wherePart != null and wherePart != ''">
-            AND #{ wherePart }
+            AND ${ wherePart }
         </if>
 	</select>
 	
